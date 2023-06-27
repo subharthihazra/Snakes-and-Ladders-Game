@@ -1,0 +1,108 @@
+:root {
+
+}
+* {
+
+}
+body {
+    padding: 0px;
+    margin: 0px;
+}
+
+#body_container {
+
+}
+
+/*===============================================*/
+/*================= Start Cover =================*/
+/*===============================================*/
+
+@keyframes uncover_start_cover {
+    0%{
+        transform: translateY(0%);
+    }
+    100%{
+        transform: translateY(-100%);
+    }
+}
+
+#start_cover{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+    background-color: rgb(220, 229, 232);
+    background-image: url("/images/start-poster.jpg");
+    background-size: cover;
+    background-position: center center;
+    overflow: hidden;
+}
+
+#start_cover.hide{
+    transform: translateY(-100%);
+    animation-name: uncover_start_cover;
+    animation-duration: 0.3s;
+}
+
+#start_cover_text {
+    position: relative;
+    font-family: 'Odibee Sans', sans-serif;
+    padding: 15px 40px;
+    font-size: 80px;
+    color: rgb(255, 255, 255);
+    text-shadow: rgba(0, 0, 0, 0.6) 0 0 5px;
+}
+
+#start_cover_text::after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 91, 171, 0.7);
+    box-shadow: rgba(0, 0, 0, 0.8) 0 0 10px 3px;
+}
+
+#start_cover_but {
+    background-color: yellow;
+    /* background-image: linear-gradient(45deg, #7b2fff , #00aea5); */
+    box-shadow: 0px 0 5px 2px rgba(0, 0, 0, 0.6), 0px 0 100px 50px rgba(255, 255, 255, 0.6);
+    font-family: 'Audiowide', sans-serif;
+    color: black;
+    border: none;
+    letter-spacing: 1px;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 30px;
+    border-radius: 45px;
+    padding: 20px 50px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#start_cover_but:hover {
+    background-color: white;
+    box-shadow: 0px 0 5px 2px rgba(0, 0, 0, 0.6), 0px 0 100px 50px yellow;
+    color: black;
+}
+
+
+
+/*===============================================*/
+/*================== Header Bar =================*/
+/*===============================================*/
+
+#headerbar{
+    width:100%;
+    height:60px;
+    background-color: antiquewhite;
+}

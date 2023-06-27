@@ -10,6 +10,9 @@
   "author": "Subharthi Hazra",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "socket.io": "^4.7.0"
   },

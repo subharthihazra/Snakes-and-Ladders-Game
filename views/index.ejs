@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snakes and Ladders Game</title>
+    <link rel="stylesheet" href="/css/index.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Odibee+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
+    <script>
+    <% if(playerAuthCode!=undefined){ 
+        %>playerAuthCode = `<%= playerAuthCode %>`;
+    <% }else{ 
+        %>playerAuthCode = undefined;
+    <% } 
+
+
+    if(roomCode!=undefined){ 
+        %>roomCode = `<%= roomCode %>`;
+    <% }else{ 
+        %>roomCode = undefined;
+    <% } 
+
+
+    if(playerName!=undefined){ 
+        %>playerName = `<%= playerName %>`;
+    <% }else{ 
+        %>playerName = undefined;
+    <% } %>
+    </script>
+    
+</head>
+<body>
+    <div id="body_container">
+
+
+
+<% if(startCoverButtonClicked!=true){ %>
+        <div id="start_cover">
+            <div id="start_cover_text">Snakes and Ladders Game</div>
+            <button id="start_cover_but">Start</button>
+        </div>
+<% } %>
+
+
+
+        <div id="headerbar">
+
+        </div>
+
+
+
+        <div id="main_container">
+
+            <div id="form_container">
+
+
+
+                <div id="form_1" class="form_element">
+                    <p id="f1_text">Your Name ?</p>
+                    <input type="text" id="f1_box" placeholder="e.g. Ritam Nandi" />
+                    <button id="f1_but">Next</button>
+                </div>
+
+
+
+                <div id="form_2" class="form_element">
+                    <button id="f2_join_but">Join Room</button>
+                    <p id="f2_text">OR</p>
+                    <button id="f2_ceate_but">Create Room</button>
+                </div>
+
+
+
+                <div id="form_3c" class="form_element">
+                    <p id="f3c_text">Room Created!</p>
+                    <div id="f3c_code_outer">
+                        <div id="f3c_code"></div>
+                        <button id="f3c_copy">Copy</button>
+                    </div>
+                    <p id="f3c_copied_text">Copied!</p>
+                    <button id="f3c_but">Enter</button>
+                </div>
+
+
+
+                <div id="form_3j" class="form_element">
+                    <p id="f3j_text">Enter Room Code</p>
+                    <input type="text" id="f3j_box" placeholder="e.g. A5jX9c" />
+                    <button id="f3j_but">Enter</button>
+                </div>
+
+
+
+            </div>
+
+            
+            <div id="game_container" class="hide">
+
+            </div>
+
+        </div>
+
+    </div>
+<!-- 
+    <input type="text" id="msgbox" placeholder="Message" />
+    <button id="msgbut">Send</button>
+    <input type="text" id="roombox" id="room" placeholder="Room" />
+    <button id="roombut">Join</button> -->
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
+
+</body>
+</html>
