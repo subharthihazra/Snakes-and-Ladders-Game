@@ -1,7 +1,3 @@
-
-const socket = io("http://localhost:3000/");
-
-
 const bodyContainer = document.querySelector("#body_container");
 const startCover = document.querySelector("#start_cover");
 const startCoverText = document.querySelector("#start_cover_text");
@@ -59,11 +55,17 @@ function deleteElmWait(elm, time = 0) {
     }, time*1000);
 }
 
+function invisibleElmWait(elm, time = 0) {
+    setTimeout(() => {
+        elm.classList.add('invisible');
+    }, time*1000);
+}
+
 if(startCover){
     startCoverButton.addEventListener("click", () =>{
         startCover.classList.add("hide")
         setCookie("startCoverButtonClicked", true);
-        deleteElmWait(startCover, 0.3)
+        invisibleElmWait(startCover, 0.3)
     })
 }
 
@@ -87,20 +89,28 @@ function enableF2() {
 }
 
 async function enableF3c() {
-    // request to create room
-    const { data } = await axios.post("/createroom", {playerName: playerName, playerAuthCode: playerAuthCode});
-    console.log(data.data);
-    roomCode = data.data.roomCode;
-    if(roomCode){
-        f3cCode.innerText = roomCode;
-        socket.emit("join-room", {roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (payload) => {
-            const { status } = payload;
-            if(status == "success") {
-                console.log(status,"iooi");
-                enableF3cButton();
-            }
-        });
+    if(roomCode==undefined || roomCode.trim().length != 6){
+        // request to create room
+        const { data } = await axios.post("/createroom", {playerAuthCode: playerAuthCode, playerName: playerName});
+        console.log(data.data);
+        roomCode = data.data.roomCode;
+        if(roomCode){
+            showRoomCode();
+            socket.emit("join-room", {roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (payload) => {
+                const { status } = payload;
+                if(status == "success") {
+                    console.log(status,"iooi");
+                    enableF3cButton();
+                }
+            });
+        }
+    }else{
+        showRoomCode();
     }
+}
+
+function showRoomCode(){
+    f3cCode.innerText = roomCode;
 }
 
 function enableF3cButton(){

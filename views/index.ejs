@@ -38,12 +38,10 @@
 
 
 
-<% if(startCoverButtonClicked!=true){ %>
-        <div id="start_cover">
+        <div id="start_cover" <% if(startCoverButtonClicked==true){ %>class="invisible"<% } %>>
             <div id="start_cover_text">Snakes and Ladders Game</div>
             <button id="start_cover_but">Start</button>
         </div>
-<% } %>
 
 
 
@@ -98,7 +96,7 @@
             </div>
 
             
-            <div id="game_container" class="hide">
+            <div id="game_container" class="invisible">
 
             </div>
 
@@ -113,6 +111,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script>const socket = io("http://localhost:3000/");</script>
 <script src="/js/index.js"></script>
 
 </body>

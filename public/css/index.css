@@ -12,6 +12,11 @@ body {
 #body_container {
 
 }
+/*-----------------------------------------------*/
+
+
+/*-----------------------------------------------*/
+
 
 /*===============================================*/
 /*================= Start Cover =================*/
@@ -47,6 +52,10 @@ body {
     transform: translateY(-100%);
     animation-name: uncover_start_cover;
     animation-duration: 0.3s;
+}
+
+#start_cover.invisible{
+    display: none;
 }
 
 #start_cover_text {

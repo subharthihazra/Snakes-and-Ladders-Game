@@ -41,10 +41,12 @@ router.route("/").get((req, res) => {
 
 router.route("/createroom").post((req, res) => {
     const {playerName, playerAuthCode} = req.body;
+    console.log(req.cookies, "cowww")
     if((playerAuthCode && playerAuthCode.trim().length == 4) && (playerName && playerName.trim() != "")){
         const roomCode = generateRoomCode();
         res.cookie("playerAuthCode", playerAuthCode)
         res.cookie("roomCode", roomCode)
+        res.cookie("playerName", playerName)
         res.status(201).json({status: "success" , data:{roomCode: roomCode}})
     }else{
         res.status(500).json({status: "error" , message: "Error Occured"})
