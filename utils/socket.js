@@ -1,14 +1,15 @@
-require('dotenv').config()
+// require('dotenv').config()
 const { Server : socketServer } = require('socket.io')
 
-SOCKET_PORT = process.env.SOCKET_PORT || 3000;
+// SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
-
-const io = new socketServer(SOCKET_PORT, {
+const createSocketServer = (port) => {
+const io = new socketServer(port, {
     cors: {
         origin: ["http://localhost:5000"]
     }
 })
+
 
 io.on("connection", (socket) => {
     console.log(socket.id,"Joined!")
@@ -27,10 +28,14 @@ io.on("connection", (socket) => {
         const {roomCode, playerAuthCode, playerName} = data;
         if(roomCode && roomCode.trim().length == 6) {
             socket.join(roomCode)
-            socket.to(roomCode).emit("msg-joined", `<b>${playerName}</b> joined!`)
+            socket.to(roomCode).emit("msg-joined", {playerAuthCode: playerAuthCode, playerName: playerName})
             callback({status: 'success'});
         }else{
             callback({status: 'error'});
         }
     })
 })
+}
+
+
+module.exports = createSocketServer;

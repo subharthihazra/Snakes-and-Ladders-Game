@@ -97,7 +97,13 @@
 
             
             <div id="game_container" class="invisible">
-
+                <div id="game_board_container">
+                    <div id="game_board"></div>
+                </div>
+                <div id="chat_container">
+                    <div id="chat_view"></div>
+                    <div id="chat_msgbar"></div>
+                </div>
             </div>
 
         </div>
@@ -110,8 +116,8 @@
     <button id="roombut">Join</button> -->
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="http://localhost:3000/socket.io/socket.io.js"></script>
-<script>const socket = io("http://localhost:3000/");</script>
+<script src="/socket.io/socket.io.js"></script>
+<script>const socket = io("/");</script>
 <script src="/js/index.js"></script>
 
 </body>

@@ -69,14 +69,29 @@ if(startCover){
     })
 }
 
-f1Button.addEventListener("click", () => {
+// entet button after typing name
+f1Button.addEventListener("click", async () => {
     if(f1Box.value.trim() != ""){
-        playerName = f1Box.value;
-        enableF2();
-        // showForm(form2)
+        if(playerName==undefined || playerName.trim() == ""){
+            playerName = f1Box.value.trim();
+        }
+        if(playerAuthCode==undefined || playerAuthCode.trim().length != 4){
+            const { data } = await axios.post("/addplayer", {playerName: playerName});
+            console.log(data.data);
+            if(data.status && data.status == "success" && data.data.playerAuthCode && data.data.playerAuthCode.trim().length == 4){
+                playerAuthCode = data.data.playerAuthCode;
+
+                enableF2();
+                // showForm(form2)
+            }
+        }else{
+            enableF2();
+            // showForm(form2)
+        }
     }
 })
 
+// form having create room or join room
 function enableF2() {
     f2CreateButton.addEventListener("click", () => {
         enableF3c();
@@ -88,13 +103,14 @@ function enableF2() {
     })
 }
 
+// create room form
 async function enableF3c() {
     if(roomCode==undefined || roomCode.trim().length != 6){
         // request to create room
         const { data } = await axios.post("/createroom", {playerAuthCode: playerAuthCode, playerName: playerName});
         console.log(data.data);
-        roomCode = data.data.roomCode;
-        if(roomCode){
+        if(data.status && data.status == "success" && data.data.roomCode && data.data.roomCode.trim().length == 6){
+            roomCode = data.data.roomCode;
             showRoomCode();
             socket.emit("join-room", {roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (payload) => {
                 const { status } = payload;
@@ -109,21 +125,32 @@ async function enableF3c() {
     }
 }
 
+// show room code
 function showRoomCode(){
     f3cCode.innerText = roomCode;
 }
 
+// enable enter button at ceate room page
 function enableF3cButton(){
 
 }
 
+// join room page
 function enableF3j() {
-    f3jButton.addEventListener("click", () => {
-        if(f3jBox.value.trim() != ""){
-            roomCode = f3jBox.value;
-            
-            // request to join room
-            // enter room
+    f3jButton.addEventListener("click", async () => {
+        if(roomCode == undefined || roomCode.trim().length != 6){
+            if(f3jBox.value.trim().length ==6){
+                roomCode = f3jBox.value.trim();
+                if(playerAuthCode && playerAuthCode.trim().length == 4){
+                    // request to join room
+                    const { data } = await axios.post("/joinroom", {roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName});
+                    console.log(data.data);
+                    if(data.status && data.status == "success"){
+                        //socket.io
+                    }
+                    // enter room
+                }
+            }
         }
     })
 }
