@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router()
 
-const {createRoom, addPlayer, getPlayer, getRoom} = require("./playersAndRooms")
+const {createRoom, addPlayer, getPlayer, getRoom, addPlayerToRoom, removePlayerFromRoom} = require("./playersAndRooms")
 
 
 router.route("/").get((req, res) => {
@@ -44,6 +44,8 @@ router.route("/createroom").post((req, res) => {
     if((playerAuthCode && playerAuthCode.trim().length == 4) && (playerName && playerName.trim() != "")){
 
         const roomCode = createRoom();
+        addPlayerToRoom(roomCode, playerAuthCode)
+
         res.cookie("playerAuthCode", playerAuthCode.trim())
         res.cookie("roomCode", roomCode)
         res.cookie("playerName", playerName.trim())
@@ -80,16 +82,23 @@ router.route("/joinroom").post((req, res) => {
 
         // console.log(getRoom(roomCode))
         // console.log(getRoom(roomCode))
-        if(getRoom(roomCode) == undefined){
+
+        res.cookie("playerAuthCode", playerAuthCode.trim())
+        res.cookie("playerName", playerName.trim())
+
+        const currentPlayers = getRoom(roomCode);
+        if(currentPlayers == undefined){
             createRoom(roomCode);
+            res.cookie("roomCode", roomCode)
+
+        }else if(currentPlayers.length >=4){
+            return res.status(201).json({status: "fail", message: "Room is full!"});
         }
         if(getPlayer(playerAuthCode == undefined)){
             addPlayer(playerAuthCode);
         }
 
-        res.cookie("playerAuthCode", playerAuthCode.trim())
-        res.cookie("roomCode", roomCode)
-        res.cookie("playerName", playerName.trim())
+        addPlayerToRoom(roomCode, playerAuthCode)
 
         res.status(201).json({status: "success"})
     }else{

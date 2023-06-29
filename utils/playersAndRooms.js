@@ -1,5 +1,6 @@
 const players = {};
 const rooms = {};
+const games = {};
 
 const generatePlayerAuthCode = require("./generatePlayerAuthCode")
 const generateRoomCode = require("./generateRoomCode")

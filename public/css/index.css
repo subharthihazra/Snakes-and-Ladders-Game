@@ -48,6 +48,7 @@ body {
     background-size: cover;
     background-position: center center;
     overflow: hidden;
+    z-index:1000;
 }
 
 #start_cover.hide{
@@ -136,7 +137,9 @@ body {
 /*===============================================*/
 /*================ Forms Section ================*/
 /*===============================================*/
-
+#form_container.invisible {
+    display: none;
+}
 
 /*===============================================*/
 /*================= Game Section ================*/
@@ -151,7 +154,7 @@ body {
 }
 
 #game_container.invisible {
-    /* display: none; */
+    display: none;
 }
 #game_board_container{
     width:calc( 100% - var(--chat-container-width) );
@@ -161,6 +164,8 @@ body {
     height:100%;
     aspect-ratio: 1/1;
     background-color: rgb(226, 156, 43);
+    background-image: url("/images/game-board.png");
+    background-size: contain;
     margin: auto;
 }
 
