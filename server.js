@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const cookieParser = require('cookie-parser');
-const connectDB = require("./utils/connectDB");
+// const connectDB = require("./utils/connectDB");
 
 
 // static assets
@@ -27,7 +27,7 @@ require("./utils/socket")(server);
 const start = async () => {
     try {
       // connectDB
-      await connectDB(process.env.MONGO_URI);
+      // await connectDB(process.env.MONGO_URI);
 
       PORT = process.env.PORT || 5000
       server.listen(PORT, () => {
@@ -42,7 +42,7 @@ const start = async () => {
   
 start();
 
-const {Player, Room, Game} = require("./utils/dataStoreSchema");
+// const {Player, Room, Game} = require("./utils/dataStoreSchema");
 // jsonProducts = {
 //   roomCode: "ABCD23",
 //   players: [{
@@ -54,8 +54,8 @@ const {Player, Room, Game} = require("./utils/dataStoreSchema");
 //   }]
 // }
 // Game.create(jsonProducts);
-Game.find({roomCode: "ABCD23"}).exec().then((res) => {
-  let result = res[0].players;
-  result = result.find(p => p.playerAuthCode === "Adi2");
-  console.log(result);
-})
+// Game.find({roomCode: "ABCD23"}).exec().then((res) => {
+//   let result = res[0].players;
+//   result = result.find(p => p.playerAuthCode === "Adi2");
+//   console.log(result);
+// })
