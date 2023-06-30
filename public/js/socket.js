@@ -23,3 +23,8 @@ socket.on("msg-joined", (payload) => {
     const {playerAuthCode, playerName} = payload;
     console.log(playerName,"with code",playerAuthCode,"joined!");
 })
+
+
+socket.on("popq", (payload) => {
+    console.log(payload);
+})

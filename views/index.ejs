@@ -29,7 +29,10 @@
         %>playerName = `<%= playerName %>`;
     <% }else{ 
         %>playerName = undefined;
-    <% } %>
+    <% } 
+    
+    const joinAtStart = (playerAuthCode && roomCode && playerName)
+    %>
     </script>
     
 </head>
@@ -53,7 +56,7 @@
 
         <div id="main_container">
 
-            <div id="form_container">
+            <div id="form_container" <% if(joinAtStart){ %>class="invisible"<% } %>>
 
 
 
@@ -96,7 +99,7 @@
             </div>
 
             
-            <div id="game_container" class="invisible">
+            <div id="game_container" <% if(!joinAtStart){ %>class="invisible"<% } %>>
                 <div id="game_board_container">
                     <div id="game_board"></div>
                 </div>

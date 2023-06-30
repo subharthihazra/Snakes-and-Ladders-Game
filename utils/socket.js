@@ -24,6 +24,19 @@ io.on("connection", (socket) => {
         }
     })
 
+    socket.on('disconnecting', () => {
+        const rooms =socket.rooms;
+        console.log("rooms",rooms);
+        rooms.forEach((room) => {
+            console.log("room",room)
+          if (room !== socket.id) {
+            console.log(`User left room: ${room}`);
+            // Perform additional actions if needed
+            io.emit("popq", { room:room})
+          }
+        });
+    });
+
     socket.on("join-room", (data, callback) => {
         const {roomCode, playerAuthCode, playerName} = data;
         if(roomCode && roomCode.trim().length == 6) {

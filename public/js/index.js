@@ -95,6 +95,13 @@ f1Button.addEventListener("click", async () => {
     }
 })
 
+if(playerAuthCode != undefined && roomCode != undefined && playerName != undefined){
+    joinRoom({roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (status) => {
+        console.log(status,"iostaoi");
+        enterGameBoard();
+    });
+}
+
 // form having create room or join room
 function enableF2() {
     f2CreateButton.addEventListener("click", () => {
@@ -116,12 +123,10 @@ async function enableF3c() {
         if(data.status && data.status == "success" && data.data.roomCode && data.data.roomCode.trim().length == 6){
             roomCode = data.data.roomCode;
             showRoomCode();
-            socket.emit("join-room", {roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (payload) => {
-                const { status } = payload;
-                if(status == "success") {
-                    console.log(status,"iooi");
-                    enableF3cButton();
-                }
+
+            joinRoom({roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (status) => {
+                console.log(status,"iooi");
+                enableF3cButton();
             });
         }
     }else{
@@ -153,13 +158,9 @@ function enableF3j() {
                     console.log(data.status);
                     if(data.status){
                         if(data.status == "success"){
-                            //socket.io
-                            socket.emit("join-room", {roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (payload) => {
-                                const { status } = payload;
-                                if(status == "success") {
-                                    console.log(status,"iojoi");
-                                    enterGameBoard();
-                                }
+                            joinRoom({roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName},(status) => {
+                                console.log(status,"iojoi");
+                                enterGameBoard();
                             });
                         }
                         if(data.status == "fail"){
@@ -177,4 +178,13 @@ function enableF3j() {
 function enterGameBoard(){
     formContainer.classList.add("invisible");
     gameContainer.classList.remove("invisible");
+}
+
+function joinRoom(data, callback){
+    socket.emit("join-room", data, (payload) => {
+        const { status } = payload;
+        if(status == "success") {
+            callback(status);
+        }
+    });
 }
