@@ -29,7 +29,10 @@
         %>playerName = `<%= playerName %>`;
     <% }else{ 
         %>playerName = undefined;
-    <% } %>
+    <% } 
+    
+    const joinAtStart = (playerAuthCode && roomCode && playerName)
+    %>
     </script>
     
 </head>
@@ -53,7 +56,7 @@
 
         <div id="main_container">
 
-            <div id="form_container">
+            <div id="form_container" <% if(joinAtStart){ %>class="invisible"<% } %>>
 
 
 
@@ -96,8 +99,9 @@
             </div>
 
             
-            <div id="game_container" class="invisible">
+            <div id="game_container" <% if(!joinAtStart){ %>class="invisible"<% } %>>
                 <div id="game_board_container">
+                    <div id="game_info" class="invisible"></div>
                     <div id="game_board"></div>
                 </div>
                 <div id="chat_container">
@@ -115,11 +119,12 @@
     <input type="text" id="roombox" id="room" placeholder="Room" />
     <button id="roombut">Join</button> -->
 
+<script src="/js/elements.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>const socket = io("/");</script>
-<script src="/js/index.js"></script>
 <script src="/js/socket.js"></script>
+<script src="/js/index.js"></script>
 
 </body>
 </html>

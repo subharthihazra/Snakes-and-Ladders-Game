@@ -1,5 +1,6 @@
 // require('dotenv').config()
 const { Server : socketServer } = require('socket.io')
+const { initGameState } = require("./playersAndRooms")
 
 // SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
@@ -24,14 +25,51 @@ io.on("connection", (socket) => {
         }
     })
 
+    socket.on("connection", () => {
+
+    })
+
+    socket.on('disconnecting', () => {
+        const rooms = socket.rooms;
+
+        rooms.forEach((room) => {
+            console.log("room",room)
+          if (room !== socket.id) {
+            console.log(`User left room: ${room}`);
+            // console.log(io.sockets.adapter.rooms)
+            console.log(io.sockets.adapter.rooms.get(room))
+            
+            // Perform additional actions if needed
+            io.emit("popq", { room:room})
+          }
+        });
+    });
+
     socket.on("join-room", (data, callback) => {
         const {roomCode, playerAuthCode, playerName} = data;
         if(roomCode && roomCode.trim().length == 6) {
             socket.join(roomCode)
             socket.to(roomCode).emit("msg-joined", {playerAuthCode: playerAuthCode, playerName: playerName})
-            callback({status: 'success'});
+            if(io.sockets.adapter.rooms.get(roomCode).size <= 4){
+                
+
+                if(io.sockets.adapter.rooms.get(roomCode).size >= 2){
+                    callback({status: 'success', showGameBut: true})
+                    socket.to(roomCode).emit("show-game-but");
+                }else{
+                    callback({status: 'success'});
+                }
+            }
         }else{
             callback({status: 'error'});
+        }
+    })
+
+    socket.on("start-actual-game", (data, callback) => {
+        const { roomCode } = data;
+        if(roomCode){
+            console.log("Pee Here");
+            initGameState(roomCode)
         }
     })
 })
