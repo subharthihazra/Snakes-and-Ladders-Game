@@ -28,3 +28,28 @@ socket.on("msg-joined", (payload) => {
 socket.on("popq", (payload) => {
     console.log(payload);
 })
+
+function joinRoom(data, callback){
+    socket.emit("join-room", data, (payload) => {
+        const { status, showGameBut : showGameButBool } = payload;
+        
+        if(status == "success") {
+            callback(status);
+        }
+        if(showGameButBool){
+            showGameBut();
+        }
+    });
+}
+
+socket.on("show-game-but", () => {
+    showGameBut();
+})
+
+
+function startActualGame(){
+    console.log("pee game started")
+    socket.emit("start-actual-game", {roomCode : roomCode}, () => {
+
+    });
+}

@@ -1,32 +1,3 @@
-const bodyContainer = document.querySelector("#body_container");
-const startCover = document.querySelector("#start_cover");
-const startCoverText = document.querySelector("#start_cover_text");
-const startCoverButton = document.querySelector("#start_cover_but");
-const headerbar = document.querySelector("#headerbar");
-const mainContainer = document.querySelector("#main_container");
-const formContainer = document.querySelector("#form_container");
-const form1 = document.querySelector("#form_1");
-const f1Text = document.querySelector("#f1_text");
-const f1Box = document.querySelector("#f1_box");
-const f1Button = document.querySelector("#f1_but");
-const form2 = document.querySelector("#form_2");
-const f2JoinButton = document.querySelector("#f2_join_but");
-const f2Text = document.querySelector("#f2_text");
-const f2CreateButton = document.querySelector("#f2_ceate_but");
-const form3c = document.querySelector("#form_3c");
-const f3cText = document.querySelector("#f3c_text");
-const f3cCodeOuter = document.querySelector("#f3c_code_outer");
-const f3cCode = document.querySelector("#f3c_code");
-const f3cCopyButton = document.querySelector("#f3c_copy");
-const f3cCopiedText = document.querySelector("#f3c_copied_text");
-const f3cButton = document.querySelector("#f3c_but");
-const form3j = document.querySelector("#form_3j");
-const f3jText = document.querySelector("#f3j_text");
-const f3jBox = document.querySelector("#f3j_box");
-const f3jButton = document.querySelector("#f3j_but");
-const gameContainer = document.querySelector("#game_container");
-
-
 // let playerName = undefined;
 // let roomCode = undefined;
 
@@ -66,15 +37,15 @@ function invisibleElmWait(elm, time = 0) {
 }
 
 if(startCover){
-    startCoverButton.addEventListener("click", () =>{
+    startCoverButton.onclick = () =>{
         startCover.classList.add("hide")
         setCookie("startCoverButtonClicked", true);
         invisibleElmWait(startCover, 0.3)
-    })
+    }
 }
 
 // entet button after typing name
-f1Button.addEventListener("click", async () => {
+f1Button.onclick = async () => {
     if(f1Box.value.trim() != ""){
         if(playerName==undefined || playerName.trim() == ""){
             playerName = f1Box.value.trim();
@@ -93,7 +64,7 @@ f1Button.addEventListener("click", async () => {
             // showForm(form2)
         }
     }
-})
+}
 
 if(playerAuthCode != undefined && roomCode != undefined && playerName != undefined){
     joinRoom({roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (status) => {
@@ -104,14 +75,14 @@ if(playerAuthCode != undefined && roomCode != undefined && playerName != undefin
 
 // form having create room or join room
 function enableF2() {
-    f2CreateButton.addEventListener("click", () => {
+    f2CreateButton.onclick = () => {
         enableF3c();
         // showForm(form3c);
-    })
-    f2JoinButton.addEventListener("click", () => {
+    }
+    f2JoinButton.onclick = () => {
         enableF3j();
         // showForm(form3j);
-    })
+    }
 }
 
 // create room form
@@ -141,14 +112,14 @@ function showRoomCode(){
 
 // enable enter button at ceate room page
 function enableF3cButton(){
-    f3cButton.addEventListener("click", () => {
+    f3cButton.onclick = () => {
         enterGameBoard();
-    })
+    }
 }
 
 // join room page
 function enableF3j() {
-    f3jButton.addEventListener("click", async () => {
+    f3jButton.onclick = async () => {
         if(roomCode == undefined || roomCode.trim().length != 6){
             if(f3jBox.value.trim().length ==6){
                 roomCode = f3jBox.value.trim();
@@ -171,7 +142,7 @@ function enableF3j() {
                 }
             }
         }
-    })
+    }
 }
 
 
@@ -180,11 +151,20 @@ function enterGameBoard(){
     gameContainer.classList.remove("invisible");
 }
 
-function joinRoom(data, callback){
-    socket.emit("join-room", data, (payload) => {
-        const { status } = payload;
-        if(status == "success") {
-            callback(status);
+function showGameBut(){
+    showGameInfo(`<button id="startGame">Start Game</button>`, () => {
+        
+        startGame = document.getElementById("startGame")
+        startGame.onclick = () => {
+            startActualGame()
         }
+        // console.log(startGame)
     });
 }
+
+function showGameInfo(content, callback = () => {}){
+    gameInfo.innerHTML = content;
+    gameInfo.classList.remove("invisible");
+    callback()
+}
+
