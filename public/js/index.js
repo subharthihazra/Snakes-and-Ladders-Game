@@ -184,8 +184,84 @@ function updateGameState(gameState){
     console.log(gameState);
 }
 
+
+// arr = [];
+// function genturu(){
+//     for(let i=1; i<=100;i++){
+//         let ones = i%10;
+//         let tens = (Math.floor(i/10))%10;
+//         let huns = (Math.floor(i/100))%10;
+
+//         if(arr[0] == undefined){
+//             arr[0]=[]
+//         }
+//         if(huns == 1){
+//             arr[0][0] = i;
+//         }else{
+//             if(arr[10-tens-1] == undefined){
+//                 arr[10-tens-1] = []
+//             }
+//             if(tens !=0 && arr[10-tens] == undefined){
+//                 arr[10-tens] = []
+//             }
+
+//             if(tens%2 == 0){ // even
+//                 if(ones == 0){
+//                     arr[10-tens][0] = i;
+//                 }
+//                 else{
+//                     arr[10-tens-1][ones-1] = i;
+//                 }
+//             }else{ // odd
+//                 if(ones == 0){
+//                     arr[10-tens][9] = i;
+//                 }
+//                 else{
+//                     arr[10-tens-1][10-ones] = i;
+//                 }
+//             }
+            
+//         }
+//     }
+//     console.log(arr);
+// }
+// genturu()
+
+
+
+function getPosToken(score = 0){
+
+    if(score <= 0 || score >100){
+        return null;
+    }
+
+    const ones = score%10;
+    const tens = (Math.floor(score/10))%10;
+    const huns = (Math.floor(score/100))%10;
+    if(huns == 1){
+        return { x: 0, y: 0 };
+    }
+    if(tens % 2 == 0){ // even
+        if(ones == 0){
+            return { x: 0, y: (10-tens) };
+        }
+        else{
+            return { x: (ones-1), y: (10-tens-1) };
+        }
+    }else{ // odd
+        if(ones == 0){
+            return { x:9, y: (10-tens) }
+        }
+        else{
+            return { x: (10-ones), y: (10-tens-1) };
+        }
+    }
+
+}
+
 //////////////////////////////////////////////////////////////////////////////
 ///////////// CALLING FUNCTIONS //////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
 joinRoomAtStart();
+console.log(getPosToken(53))
