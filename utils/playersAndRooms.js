@@ -2,8 +2,16 @@ const players = {};
 const rooms = {};
 const gamesData = {};
 
-const generatePlayerAuthCode = require("./generatePlayerAuthCode")
-const generateRoomCode = require("./generateRoomCode")
+const generateRandomString = require('./generateRandomString');
+
+const generateRoomCode = () =>{
+    return generateRandomString(6);
+}
+
+const generatePlayerAuthCode = () =>{
+    return generateRandomString(4);
+}
+
 
 const createRoom = (roomCode = undefined) => {
     if(roomCode == undefined){

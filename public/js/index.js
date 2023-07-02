@@ -173,10 +173,20 @@ function showGameBut(){
     });
 }
 
+function hideGameBut(){
+    hideGameInfo();
+}
+
 function showGameInfo(content, callback = () => {}){
     gameInfo.innerHTML = content;
     gameInfo.classList.remove("invisible");
-    callback()
+    callback();
+}
+
+function hideGameInfo(callback = () => {}){
+    gameInfo.innerHTML = "";
+    invisibleElmWait(gameInfo, GAME_INFO_ANIM_DURATION);
+    callback();
 }
 
 function updateGameState(gameState){
@@ -184,50 +194,29 @@ function updateGameState(gameState){
     console.log(gameState);
 }
 
+function initTokens(gameState){
+    curGameState = gameState;
 
-// arr = [];
-// function genturu(){
-//     for(let i=1; i<=100;i++){
-//         let ones = i%10;
-//         let tens = (Math.floor(i/10))%10;
-//         let huns = (Math.floor(i/100))%10;
+    Object.keys(gameState.players).forEach((player) => {
+        gameBoard.innerHTML+=`<div id="Token_${player}" class="${gameState.players[player].color}"></div>`;
+        playerTokens[player] = document.getElementById(`Token_${player}`);
+    })
+}
 
-//         if(arr[0] == undefined){
-//             arr[0]=[]
-//         }
-//         if(huns == 1){
-//             arr[0][0] = i;
-//         }else{
-//             if(arr[10-tens-1] == undefined){
-//                 arr[10-tens-1] = []
-//             }
-//             if(tens !=0 && arr[10-tens] == undefined){
-//                 arr[10-tens] = []
-//             }
+function showDiceBut(){
+    showGameInfo(`<button id="rollDice">Roll Dice</button>`, () => {
+        
+        rollDice = document.getElementById("rollDice")
+        rollDice.onclick = () => {
+            reqRollDice()
+        }
+        // console.log(startGame)
+    });
+}
 
-//             if(tens%2 == 0){ // even
-//                 if(ones == 0){
-//                     arr[10-tens][0] = i;
-//                 }
-//                 else{
-//                     arr[10-tens-1][ones-1] = i;
-//                 }
-//             }else{ // odd
-//                 if(ones == 0){
-//                     arr[10-tens][9] = i;
-//                 }
-//                 else{
-//                     arr[10-tens-1][10-ones] = i;
-//                 }
-//             }
-            
-//         }
-//     }
-//     console.log(arr);
-// }
-// genturu()
-
-
+function hideDiceBut(){
+    hideGameInfo();
+}
 
 function getPosToken(score = 0){
 
@@ -264,4 +253,4 @@ function getPosToken(score = 0){
 //////////////////////////////////////////////////////////////////////////////
 
 joinRoomAtStart();
-console.log(getPosToken(53))
+// console.log(getPosToken(53))

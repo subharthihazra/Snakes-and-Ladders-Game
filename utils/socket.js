@@ -76,6 +76,15 @@ io.on("connection", (socket) => {
             }
         }
     })
+
+    socket.on("roll-dice", (data, callback) => {
+        const { roomCode } = data;
+        if(roomCode){
+            
+        }
+    })
+
+
 })
 }
 

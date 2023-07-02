@@ -49,14 +49,36 @@ socket.on("show-game-but", () => {
 function startActualGame(){
     console.log("pee game started")
     console.log(roomCode)
-    socket.emit("start-actual-game", {roomCode : roomCode}, (data) => {
+    socket.emit("start-actual-game", {roomCode : roomCode}, handleStartingActualGame);
+}
+
+socket.on("starting-actual-game", handleStartingActualGame)
+
+function handleStartingActualGame(data){
+    const { gameState } = data;
+    hideGameBut();
+    initTokens(gameState);
+    updateGameState(gameState);
+    if(gameState.turn == playerAuthCode){
+        showDiceBut();
+    }
+}
+
+function reqRollDice(){
+    socket.emit("roll-dice", {roomCode : roomCode}, (data) => {
         const { gameState } = data;
-        updateGameState(gameState)
+        hideDiceBut();
+        updateGameState(gameState);
+        if(gameState.turn == playerAuthCode){
+            showDiceBut();
+        }
     });
 }
 
-socket.on("starting-actual-game",(data) =>{
+socket.on("update-game-state", (data) => {
     const { gameState } = data;
-    updateGameState(gameState)
+    updateGameState(gameState);
+    if(gameState.turn == playerAuthCode){
+        showDiceBut();
+    }
 })
-
