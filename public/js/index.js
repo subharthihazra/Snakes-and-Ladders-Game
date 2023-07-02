@@ -66,11 +66,22 @@ f1Button.onclick = async () => {
     }
 }
 
-if(playerAuthCode != undefined && roomCode != undefined && playerName != undefined){
-    joinRoom({roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (status) => {
-        console.log(status,"iostaoi");
-        enterGameBoard();
-    });
+async function joinRoomAtStart(){
+    if(playerAuthCode != undefined && roomCode != undefined && playerName != undefined){
+        const { data } = await axios.post("/joinroom", {roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName});
+        console.log(data.status);
+        if(data.status){
+            if(data.status == "success"){
+                joinRoom({roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName},(status) => {
+                    console.log(status,"atstart");
+                    enterGameBoard();
+                });
+            }
+            if(data.status == "fail"){
+                console.log(data.message);
+            }
+        }
+    }
 }
 
 // form having create room or join room
@@ -168,3 +179,13 @@ function showGameInfo(content, callback = () => {}){
     callback()
 }
 
+function updateGameState(gameState){
+    curGameState = gameState;
+    console.log(gameState);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+///////////// CALLING FUNCTIONS //////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+joinRoomAtStart();

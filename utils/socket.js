@@ -68,8 +68,12 @@ io.on("connection", (socket) => {
     socket.on("start-actual-game", (data, callback) => {
         const { roomCode } = data;
         if(roomCode){
-            console.log("Pee Here");
-            initGameState(roomCode)
+            console.log("Pee Here",roomCode);
+            const initState = initGameState(roomCode)
+            if(initState){
+                socket.to(roomCode).emit("starting-actual-game",{gameState : initState})
+                callback({gameState : initState})
+            }
         }
     })
 })

@@ -46,10 +46,17 @@ socket.on("show-game-but", () => {
     showGameBut();
 })
 
-
 function startActualGame(){
     console.log("pee game started")
-    socket.emit("start-actual-game", {roomCode : roomCode}, () => {
-
+    console.log(roomCode)
+    socket.emit("start-actual-game", {roomCode : roomCode}, (data) => {
+        const { gameState } = data;
+        updateGameState(gameState)
     });
 }
+
+socket.on("starting-actual-game",(data) =>{
+    const { gameState } = data;
+    updateGameState(gameState)
+})
+

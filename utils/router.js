@@ -91,10 +91,10 @@ router.route("/joinroom").post((req, res) => {
             createRoom(roomCode);
             res.cookie("roomCode", roomCode)
 
-        }else if(currentPlayers.length >=4){
+        }else if(currentPlayers.length >4){
             return res.status(201).json({status: "fail", message: "Room is full!"});
         }
-        if(getPlayer(playerAuthCode == undefined)){
+        if(getPlayer(playerAuthCode) == undefined){
             addPlayer(playerAuthCode);
         }
 
