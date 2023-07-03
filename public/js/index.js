@@ -66,11 +66,22 @@ f1Button.onclick = async () => {
     }
 }
 
-if(playerAuthCode != undefined && roomCode != undefined && playerName != undefined){
-    joinRoom({roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName}, (status) => {
-        console.log(status,"iostaoi");
-        enterGameBoard();
-    });
+async function joinRoomAtStart(){
+    if(playerAuthCode != undefined && roomCode != undefined && playerName != undefined){
+        const { data } = await axios.post("/joinroom", {roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName});
+        console.log(data.status);
+        if(data.status){
+            if(data.status == "success"){
+                joinRoom({roomCode: roomCode, playerAuthCode: playerAuthCode, playerName: playerName},(status) => {
+                    console.log(status,"atstart");
+                    enterGameBoard();
+                });
+            }
+            if(data.status == "fail"){
+                console.log(data.message);
+            }
+        }
+    }
 }
 
 // form having create room or join room
@@ -162,9 +173,84 @@ function showGameBut(){
     });
 }
 
+function hideGameBut(){
+    hideGameInfo();
+}
+
 function showGameInfo(content, callback = () => {}){
     gameInfo.innerHTML = content;
     gameInfo.classList.remove("invisible");
-    callback()
+    callback();
 }
 
+function hideGameInfo(callback = () => {}){
+    gameInfo.innerHTML = "";
+    invisibleElmWait(gameInfo, GAME_INFO_ANIM_DURATION);
+    callback();
+}
+
+function updateGameState(gameState){
+    curGameState = gameState;
+    console.log(gameState);
+}
+
+function initTokens(gameState){
+    curGameState = gameState;
+
+    Object.keys(gameState.players).forEach((player) => {
+        gameBoard.innerHTML+=`<div id="Token_${player}" class="${gameState.players[player].color}"></div>`;
+        playerTokens[player] = document.getElementById(`Token_${player}`);
+    })
+}
+
+function showDiceBut(){
+    showGameInfo(`<button id="rollDice">Roll Dice</button>`, () => {
+        
+        rollDice = document.getElementById("rollDice")
+        rollDice.onclick = () => {
+            reqRollDice()
+        }
+        // console.log(startGame)
+    });
+}
+
+function hideDiceBut(){
+    hideGameInfo();
+}
+
+function getPosToken(score = 0){
+
+    if(score <= 0 || score >100){
+        return null;
+    }
+
+    const ones = score%10;
+    const tens = (Math.floor(score/10))%10;
+    const huns = (Math.floor(score/100))%10;
+    if(huns == 1){
+        return { x: 0, y: 0 };
+    }
+    if(tens % 2 == 0){ // even
+        if(ones == 0){
+            return { x: 0, y: (10-tens) };
+        }
+        else{
+            return { x: (ones-1), y: (10-tens-1) };
+        }
+    }else{ // odd
+        if(ones == 0){
+            return { x:9, y: (10-tens) }
+        }
+        else{
+            return { x: (10-ones), y: (10-tens-1) };
+        }
+    }
+
+}
+
+//////////////////////////////////////////////////////////////////////////////
+///////////// CALLING FUNCTIONS //////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+joinRoomAtStart();
+// console.log(getPosToken(53))

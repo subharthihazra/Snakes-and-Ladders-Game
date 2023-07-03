@@ -1,3 +1,5 @@
+const GAME_INFO_ANIM_DURATION = 0.3;
+
 const bodyContainer = document.querySelector("#body_container");
 const startCover = document.querySelector("#start_cover");
 const startCoverText = document.querySelector("#start_cover_text");
@@ -31,4 +33,10 @@ const gameBoard = document.querySelector("#game_board");
 const chatContainer = document.querySelector("#chat_container");
 const chatView = document.querySelector("#chat_view");
 const chatMsgbar = document.querySelector("#chat_msgbar");
+
 let startGame = undefined;
+let curGameState = undefined;
+let dice = undefined;
+let playerTokens = {};
+let turn = undefined;
+let rollDice = undefined;
