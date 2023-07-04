@@ -34,9 +34,12 @@ const chatContainer = document.querySelector("#chat_container");
 const chatView = document.querySelector("#chat_view");
 const chatMsgbar = document.querySelector("#chat_msgbar");
 
+let playerNames = {};
 let startGame = undefined;
 let curGameState = undefined;
-let dice = undefined;
 let playerTokens = {};
-let turn = undefined;
 let rollDice = undefined;
+let playAgain = undefined;
+
+let dice = undefined;
+let turn = undefined;

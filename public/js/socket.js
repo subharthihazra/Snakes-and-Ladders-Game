@@ -21,7 +21,11 @@ socket.on("connect", (payload) => {
 })
 socket.on("msg-joined", (payload) => {
     const {playerAuthCode, playerName} = payload;
-    console.log(playerName,"with code",playerAuthCode,"joined!");
+    if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
+
+        playerNames[playerAuthCode.trim()] = playerName.trim();
+        console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+    }
 })
 
 
@@ -35,6 +39,11 @@ function joinRoom(data, callback){
         
         if(status == "success") {
             callback(status);
+            if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
+
+                playerNames[playerAuthCode.trim()] = playerName.trim();
+                console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+            }
         }
         if(showGameButBool){
             showGameBut();
@@ -56,7 +65,8 @@ socket.on("starting-actual-game", handleStartingActualGame)
 
 function handleStartingActualGame(data){
     const { gameState } = data;
-    hideGameBut();
+    hideGameInfo();
+
     initTokens(gameState);
     updateGameState(gameState);
     if(gameState.turn == playerAuthCode){
@@ -67,9 +77,17 @@ function handleStartingActualGame(data){
 
 function reqRollDice(){
     socket.emit("roll-dice", {roomCode : roomCode, playerAuthCode : playerAuthCode}, (data) => {
-        const { gameState } = data;
-        hideDiceBut();
+
+        const { gameState, curDice, winner, gotLadder, gotSnake } = data;
+
         updateGameState(gameState);
+        hideGameInfo();
+
+        if(winner && winner.trim().length == 4){
+            console.log(playerNames[winner.trim()], "won!");
+            showPlayAgainBut();
+        }
+
         if(gameState.turn == playerAuthCode){
             showDiceBut();
         }
@@ -77,8 +95,16 @@ function reqRollDice(){
 }
 
 socket.on("update-game-state", (data) => {
-    const { gameState, curDice } = data;
+
+    const { gameState, curDice, winner, gotLadder, gotSnake } = data;
+
     updateGameState(gameState);
+
+    if(winner && winner.trim().length == 4){
+        console.log(playerNames[winner.trim()], "won!");
+        showPlayAgainBut();
+    }
+    
     if(gameState.turn == playerAuthCode){
         showDiceBut();
     }

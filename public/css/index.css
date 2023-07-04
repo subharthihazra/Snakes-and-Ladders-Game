@@ -181,7 +181,10 @@ body {
     height:5%;
     background-color: rgba(0, 0, 0, 0.3);
     position: absolute;
-    
+    border-radius: 100%;
+    box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -50%);
+
     transition: all 0.3s;
 }
 [id^="Token_"].red{
