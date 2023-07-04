@@ -173,9 +173,9 @@ function showGameBut(){
     });
 }
 
-function hideGameBut(){
-    hideGameInfo();
-}
+// function hideGameBut(){
+//     hideGameInfo();
+// }
 
 function showGameInfo(content, callback = () => {}){
     gameInfo.innerHTML = content;
@@ -222,6 +222,7 @@ function updateTokens(){
 
 function initTokens(gameState){
     curGameState = gameState;
+    gameBoard.innerHTML = "";
 
     for(player of Object.keys(gameState.players)){
         // gameBoard.innerHTML+=`<div id="Token_${player}" class="${gameState.players[player].color}"></div>`;
@@ -248,8 +249,18 @@ function showDiceBut(){
     });
 }
 
-function hideDiceBut(){
-    hideGameInfo();
+// function hideDiceBut(){
+//     hideGameInfo();
+// }
+
+function showPlayAgainBut(){
+    showGameInfo(`<button id="playAgain">Play Again</button>`, () => {
+        
+        playAgain = document.getElementById("playAgain")
+        playAgain.onclick = () => {
+            startActualGame()
+        }
+    });
 }
 
 function getPosToken(score = 0){

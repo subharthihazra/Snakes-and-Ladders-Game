@@ -77,7 +77,7 @@ router.route("/addplayer").post((req, res) => {
 router.route("/joinroom").post((req, res) => {
     const {roomCode, playerAuthCode, playerName} = req.body;
     if(roomCode && roomCode.trim().length == 6 &&
-    playerAuthCode && playerAuthCode.trim().length == 4){
+    playerAuthCode && playerAuthCode.trim().length == 4 && playerName && playerName.trim() != ""){
         // check if roomCode and playerAuthCode exists else add
 
         // console.log(getRoom(roomCode))
@@ -94,7 +94,7 @@ router.route("/joinroom").post((req, res) => {
             return res.status(201).json({status: "fail", message: "Room is full!"});
         }
         if(getPlayer(playerAuthCode) == undefined){
-            addPlayer(playerAuthCode);
+            addPlayer(playerName, playerAuthCode);
         }
 
         addPlayerToRoom(roomCode, playerAuthCode)

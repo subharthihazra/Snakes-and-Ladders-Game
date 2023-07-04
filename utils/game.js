@@ -22,22 +22,24 @@ const createRoom = (roomCode = undefined) => {
             roomCode = generateRoomCode();
         }while(rooms[roomCode])
 
-        rooms[roomCode] = [];
-    }else{
-        rooms[roomCode] = [];
     }
+    
+    rooms[roomCode] = [];
+    
     // console.log(rooms);
     return roomCode;
 }
 
-const addPlayer = (playerName) => {
+const addPlayer = (playerName, playerAuthCode = undefined) => {
     
-    let playerAuthCode = undefined;
-    do{
-        playerAuthCode = generatePlayerAuthCode();
-    }while(players[playerAuthCode])
+    if(playerAuthCode == undefined){
+        do{
+            playerAuthCode = generatePlayerAuthCode();
+        }while(players[playerAuthCode])
+    }
 
     players[playerAuthCode] = playerName;
+    
     // console.log(players);
     return playerAuthCode;
 }
@@ -125,7 +127,7 @@ const passTurn = (roomCode) => {
 
 const initGameState = (roomCode) => {
     if(roomCode){
-        if(getGameState(roomCode) == undefined){
+        // if(getGameState(roomCode) == undefined){
             let curColors = ['red', 'green', 'blue', 'yellow'];;
 
             const playerAuthCodes = getRoom(roomCode);
@@ -152,10 +154,10 @@ const initGameState = (roomCode) => {
                 // console.log(gamesData);
                 return {gameState: getGameState(roomCode)};
             }
-        }else{
-            // console.log("hus");
-            return {gameState: getGameState(roomCode)};
-        }
+        // }else{
+        //     // console.log("hus");
+        //     return {gameState: getGameState(roomCode)};
+        // }
     }
     return false;
 }
@@ -170,10 +172,15 @@ const updateGameState = (roomCode, playerAuthCode) => {
                 const newScore = parseInt(gamesData[roomCode].players[playerAuthCode].score) + curDice;
 
                 if(newScore == 100){
+
                     gamesData[roomCode].players[playerAuthCode].score = newScore;
+                    gamesData[roomCode].turn = "";
                     dataToSend.winner = playerAuthCode;
+
                 }else if(newScore > 100){
+
                     passTurn(roomCode);
+
                 }else{
 
                     const gotSnake = getSnake(newScore);
@@ -181,12 +188,14 @@ const updateGameState = (roomCode, playerAuthCode) => {
                     
                     
                     if(gotSnake){
-    
+                        dataToSend.gotSnake = gotSnake;
+
                         gamesData[roomCode].players[playerAuthCode].score = parseInt(gotSnake);
     
                         passTurn(roomCode);
     
                     }else if(gotLadder){
+                        dataToSend.gotLadder = gotLadder;
     
                         gamesData[roomCode].players[playerAuthCode].score = parseInt(gotLadder);
     
