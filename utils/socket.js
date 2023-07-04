@@ -1,6 +1,6 @@
 // require('dotenv').config()
 const { Server : socketServer } = require('socket.io')
-const { initGameState } = require("./playersAndRooms")
+const { initGameState, updateGameState } = require("./game")
 
 // SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
@@ -69,18 +69,22 @@ io.on("connection", (socket) => {
         const { roomCode } = data;
         if(roomCode){
             console.log("Pee Here",roomCode);
-            const initState = initGameState(roomCode)
-            if(initState){
-                socket.to(roomCode).emit("starting-actual-game",{gameState : initState})
-                callback({gameState : initState})
+            const data = initGameState(roomCode);
+            if(data && data.gameState){
+                socket.to(roomCode).emit("starting-actual-game",data)
+                callback(data)
             }
         }
     })
 
     socket.on("roll-dice", (data, callback) => {
-        const { roomCode } = data;
-        if(roomCode){
-            
+        const { roomCode, playerAuthCode } = data;
+        if(roomCode && playerAuthCode){
+            const data = updateGameState(roomCode, playerAuthCode);
+            if(data && data.gameState){
+                socket.to(roomCode).emit("update-game-state",data)
+                callback(data)
+            }
         }
     })
 

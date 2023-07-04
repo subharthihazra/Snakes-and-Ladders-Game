@@ -60,12 +60,13 @@ function handleStartingActualGame(data){
     initTokens(gameState);
     updateGameState(gameState);
     if(gameState.turn == playerAuthCode){
+        console.log("me")
         showDiceBut();
     }
 }
 
 function reqRollDice(){
-    socket.emit("roll-dice", {roomCode : roomCode}, (data) => {
+    socket.emit("roll-dice", {roomCode : roomCode, playerAuthCode : playerAuthCode}, (data) => {
         const { gameState } = data;
         hideDiceBut();
         updateGameState(gameState);
@@ -76,7 +77,7 @@ function reqRollDice(){
 }
 
 socket.on("update-game-state", (data) => {
-    const { gameState } = data;
+    const { gameState, curDice } = data;
     updateGameState(gameState);
     if(gameState.turn == playerAuthCode){
         showDiceBut();

@@ -185,32 +185,66 @@ function showGameInfo(content, callback = () => {}){
 
 function hideGameInfo(callback = () => {}){
     gameInfo.innerHTML = "";
-    invisibleElmWait(gameInfo, GAME_INFO_ANIM_DURATION);
+    gameInfo.classList.add("invisible");
     callback();
 }
 
 function updateGameState(gameState){
     curGameState = gameState;
+    // console.log("congo")
+    // console.log(playerTokens)
+    
+    updateTokens()
+    
     console.log(gameState);
+}
+
+function updateTokens(){
+
+    for(player of Object.keys(curGameState.players)){
+        console.log(player)
+        
+        const curScore = curGameState.players[player].score;
+        const curPos = getPosToken(curScore);
+
+        console.log(curGameState.players[player],curScore, curPos);
+        if(curPos){
+            // console.log(playerTokens[player]);
+            console.log(((10*parseInt(curPos.x)+5) + "%"), ((10*parseInt(curPos.y)+5) + "%"))
+
+            playerTokens[player].style.left = (10*parseInt(curPos.x)+5) + "%";
+            playerTokens[player].style.top = (10*parseInt(curPos.y)+5) + "%";
+            
+        }
+    }
+
 }
 
 function initTokens(gameState){
     curGameState = gameState;
 
-    Object.keys(gameState.players).forEach((player) => {
-        gameBoard.innerHTML+=`<div id="Token_${player}" class="${gameState.players[player].color}"></div>`;
-        playerTokens[player] = document.getElementById(`Token_${player}`);
-    })
+    for(player of Object.keys(gameState.players)){
+        // gameBoard.innerHTML+=`<div id="Token_${player}" class="${gameState.players[player].color}"></div>`;
+
+        const div = document.createElement("div");
+        div.id = `Token_${player}`;
+        div.className = gameState.players[player].color;
+
+        gameBoard.appendChild(div);
+
+        playerTokens[player] = div;
+    }
+
 }
 
 function showDiceBut(){
+    console.log("diceee");
     showGameInfo(`<button id="rollDice">Roll Dice</button>`, () => {
         
         rollDice = document.getElementById("rollDice")
         rollDice.onclick = () => {
             reqRollDice()
         }
-        // console.log(startGame)
     });
 }
 
@@ -220,8 +254,11 @@ function hideDiceBut(){
 
 function getPosToken(score = 0){
 
-    if(score <= 0 || score >100){
+    if(score < 0 || score >100){
         return null;
+    }
+    if(score == 0){
+        return {x: -1, y: 9}
     }
 
     const ones = score%10;

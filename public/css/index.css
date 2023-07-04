@@ -176,6 +176,37 @@ body {
     
 }
 
+[id^="Token_"]{
+    width:5%;
+    height:5%;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    
+    transition: all 0.3s;
+}
+[id^="Token_"].red{
+    background-color: red;
+}
+[id^="Token_"].green{
+    background-color: green;
+}
+[id^="Token_"].blue{
+    background-color: blue;
+}
+[id^="Token_"].yellow{
+    background-color: yellow;
+}
+/* 
+[id^="Token_"] + [id^="Token_"]{
+    transform: translate(10%,10%);
+}
+[id^="Token_"] + [id^="Token_"] + [id^="Token_"]{
+    transform: translate(20%,20%);
+}
+[id^="Token_"] + [id^="Token_"] + [id^="Token_"] + [id^="Token_"]{
+    transform: translate(30%,30%);
+} */
+
 #game_info{
     position: absolute;
     width:100%;

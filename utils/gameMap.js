@@ -16,3 +16,5 @@ const laddersMap = {
 	'63': '80',
 	'71': '89'
 };
+
+module.exports = {snakesMap, laddersMap}
