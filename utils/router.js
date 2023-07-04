@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router()
 
-const {createRoom, addPlayer, getPlayer, getRoom, addPlayerToRoom, removePlayerFromRoom} = require("./playersAndRooms")
+const {createRoom, addPlayer, getPlayer, getRoom, addPlayerToRoom, removePlayerFromRoom} = require("./game")
 
 
 router.route("/").get((req, res) => {
@@ -89,7 +89,6 @@ router.route("/joinroom").post((req, res) => {
         const currentPlayers = getRoom(roomCode);
         if(currentPlayers == undefined){
             createRoom(roomCode);
-            res.cookie("roomCode", roomCode)
 
         }else if(currentPlayers.length >4){
             return res.status(201).json({status: "fail", message: "Room is full!"});
@@ -99,6 +98,8 @@ router.route("/joinroom").post((req, res) => {
         }
 
         addPlayerToRoom(roomCode, playerAuthCode)
+        
+        res.cookie("roomCode", roomCode)
 
         res.status(201).json({status: "success"})
     }else{
