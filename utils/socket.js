@@ -1,6 +1,19 @@
 // require('dotenv').config()
 const { Server : socketServer } = require('socket.io')
-const { initGameState, updateGameState } = require("./game")
+
+const {
+    removePlayerFromRoom,
+    getGameState,
+    initGameState,
+    updateGameState,
+    fixGameState,
+    addSocket,
+    removeSocket,
+    getSocket,
+    getRoom,
+    getPlayer
+
+} = require("./game")
 
 // SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
@@ -26,32 +39,60 @@ io.on("connection", (socket) => {
     })
 
     socket.on("connection", () => {
-
+        const abf="hull";
     })
 
     socket.on('disconnecting', () => {
         const rooms = socket.rooms;
+        
+        for(room of rooms){
+            if (room !== socket.id && room.trim().length == 6) {
+                
+                //NOTE: if function is used instead of () => , then this.id also works instead of socket.id
 
-        rooms.forEach((room) => {
-            console.log("room",room)
-          if (room !== socket.id) {
-            console.log(`User left room: ${room}`);
-            // console.log(io.sockets.adapter.rooms)
-            console.log(io.sockets.adapter.rooms.get(room))
-            
-            // Perform additional actions if needed
-            io.emit("popq", { room:room})
-          }
-        });
+                const playerAuthCode = getSocket(socket.id)
+                const playerName = getPlayer(playerAuthCode)
+
+                if(playerAuthCode){
+                
+                    removePlayerFromRoom(room, playerAuthCode)
+
+                    socket.to(room).emit("msg-left", {playerAuthCode: playerAuthCode, playerName: playerName})
+
+                    const curGameState = getGameState(room);
+                    if(curGameState){
+                        if(curGameState.players[playerAuthCode]){
+
+                            const data = fixGameState(room, playerAuthCode)
+                            socket.to(room).emit("fix-game-state",data)
+                        }
+                    }
+                }
+                removeSocket(socket.id)
+
+                console.log(getPlayer(playerAuthCode), "left room", room, "!!!!");
+                
+                // Perform additional actions if needed
+                io.emit("popq", { room:room})
+            }
+        };
     });
 
+    socket.on("disconnect", () => {
+
+    })
+
     socket.on("join-room", (data, callback) => {
+
         const {roomCode, playerAuthCode, playerName} = data;
+
         if(roomCode && roomCode.trim().length == 6) {
+
             socket.join(roomCode)
             socket.to(roomCode).emit("msg-joined", {playerAuthCode: playerAuthCode, playerName: playerName})
+            addSocket(socket.id, playerAuthCode)
+
             if(io.sockets.adapter.rooms.get(roomCode).size <= 4){
-                
 
                 if(io.sockets.adapter.rooms.get(roomCode).size >= 2){
                     callback({status: 'success', showGameBut: true})

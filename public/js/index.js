@@ -238,6 +238,15 @@ function initTokens(gameState){
 
 }
 
+function removeTokens(gameState){
+    newPlayers = Object.keys(gameState.players)
+    for(player of Object.keys(curGameState.players)){
+        if(newPlayers.indexOf(player) == -1){
+            delete playerTokens[player];
+        }
+    }
+}
+
 function showDiceBut(){
     console.log("diceee");
     showGameInfo(`<button id="rollDice">Roll Dice</button>`, () => {
