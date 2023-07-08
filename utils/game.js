@@ -1,6 +1,7 @@
 const players = {};
 const rooms = {};
 const gamesData = {};
+const sockets = {};
 
 const {generateRandomString, rollADice} = require("./random");
 const {snakesMap, laddersMap} = require("./gameMap")
@@ -39,7 +40,7 @@ const addPlayer = (playerName, playerAuthCode = undefined) => {
     }
 
     players[playerAuthCode] = playerName;
-    
+
     // console.log(players);
     return playerAuthCode;
 }
@@ -59,6 +60,14 @@ const addPlayerToRoom = (roomCode, playerAuthCode) => {
         return true;
     }
     return false;
+}
+
+const checkPlayerInRoom = (roomCode, playerAuthCode) => {
+    if(roomCode && playerAuthCode && rooms[roomCode] && rooms[roomCode].indexOf(playerAuthCode) != -1) {
+        return true;
+    }else{
+        return false;
+    }
 }
 
 const removePlayerFromRoom = (roomCode, playerAuthCode) => {
@@ -218,6 +227,46 @@ const updateGameState = (roomCode, playerAuthCode) => {
     }
 }
 
+const fixGameState = (roomCode, playerAuthCode) => {
+    
+    // console.log('fixGameState', roomCode, playerAuthCode);
+
+    if(roomCode && playerAuthCode){
+
+        const curGameState = getGameState(roomCode);
+        
+        if(curGameState != undefined){
+            if(curGameState.turn == playerAuthCode){
+
+                passTurn(roomCode);
+            }
+            if(curGameState.players[playerAuthCode]){
+
+                delete gamesData[roomCode].players[playerAuthCode];
+
+                gamesData[roomCode].count -= 1;
+            }
+
+            return {gameState: getGameState(roomCode)}
+        }
+    }
+}
+
+const addSocket = (socketid, playerAuthCode) => {
+    if(socketid && playerAuthCode){
+
+        sockets[socketid] = playerAuthCode;
+    }
+}
+
+const removeSocket = (socketid) => {
+    delete sockets[socketid];
+}
+
+const getSocket = (socketid) => {
+    return sockets[socketid];
+}
+
 module.exports = {
     addPlayer,
     createRoom,
@@ -227,5 +276,10 @@ module.exports = {
     removePlayerFromRoom,
     initGameState,
     getGameState,
-    updateGameState
+    updateGameState,
+    fixGameState,
+    addSocket,
+    removeSocket,
+    getSocket,
+    checkPlayerInRoom
 };

@@ -29,6 +29,16 @@ socket.on("msg-joined", (payload) => {
 })
 
 
+socket.on("msg-left", (payload) => {
+    const {playerAuthCode, playerName} = payload;
+    if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
+
+        delete playerNames[playerAuthCode.trim()];
+        console.log(playerName.trim(),"with code",playerAuthCode.trim(),"left!");
+    }
+})
+
+
 socket.on("popq", (payload) => {
     console.log(payload);
 })
@@ -108,4 +118,11 @@ socket.on("update-game-state", (data) => {
     if(gameState.turn == playerAuthCode){
         showDiceBut();
     }
+})
+
+
+socket.on("fix-game-state", (data) => {
+    const { gameState } = data;
+
+    removeTokens(gameState);
 })
