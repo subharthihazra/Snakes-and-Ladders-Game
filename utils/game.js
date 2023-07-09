@@ -2,6 +2,7 @@ const players = {};
 const rooms = {};
 const gamesData = {};
 const sockets = {};
+const historyData = {};
 
 const {generateRandomString, rollADice} = require("./random");
 const {snakesMap, laddersMap} = require("./gameMap")
@@ -92,6 +93,36 @@ const getLadder = (score) => {
     return laddersMap[score];
 }
 
+const addToHistory = (roomCode, playerAuthCode) => {
+    for(player of rooms[roomCode]){
+
+        if(historyData[player] == undefined){
+
+            historyData[player] = {};
+            historyData[player].won = 0;
+            historyData[player].lost = 0;
+        }
+
+        if(player != playerAuthCode){
+            
+            historyData[player].lost += 1;
+        }else{
+
+            historyData[player].won += 1;
+        }
+    }
+}
+
+const getPlayersOfRoom = (roomCode) => {
+    let playerNames = {};
+    for(playerAuthCode of rooms[roomCode]){
+
+        playerNames[playerAuthCode] = getPlayer(playerAuthCode);
+    }
+
+    return playerNames;
+}
+
 const passTurn = (roomCode) => {
     if(roomCode){
         const curGameState = getGameState(roomCode);
@@ -158,6 +189,7 @@ const initGameState = (roomCode) => {
                     curColors.splice(0, 1);
                     gamesData[roomCode].players[playerAuthCode].score = 0;
                     gamesData[roomCode].players[playerAuthCode].lastTime = Date.now();
+
                 }
 
                 // console.log(gamesData);
@@ -185,6 +217,8 @@ const updateGameState = (roomCode, playerAuthCode) => {
                     gamesData[roomCode].players[playerAuthCode].score = newScore;
                     gamesData[roomCode].turn = "";
                     dataToSend.winner = playerAuthCode;
+
+                    addToHistory(roomCode, playerAuthCode);
 
                 }else if(newScore > 100){
 
@@ -247,8 +281,31 @@ const fixGameState = (roomCode, playerAuthCode) => {
                 gamesData[roomCode].count -= 1;
             }
 
-            return {gameState: getGameState(roomCode)}
+            let dataToSend = {};
+
+            if(gamesData[roomCode].count == 1){
+
+                gamesData[roomCode].turn = "";
+                dataToSend.winner = Object.keys(gamesData[roomCode].players)[0];
+
+                addToHistory(roomCode, dataToSend.winner);
+
+            }else if(gamesData[roomCode].count == 0){
+
+                delete gamesData[roomCode];
+            }
+
+            dataToSend.gameState = getGameState(roomCode);
+
+            return dataToSend;
         }
+    }
+}
+
+const removeGameState = (roomCode) => {
+    if(roomCode && gamesData[roomCode]){
+
+        delete gamesData[roomCode];
     }
 }
 
@@ -281,5 +338,7 @@ module.exports = {
     addSocket,
     removeSocket,
     getSocket,
-    checkPlayerInRoom
+    checkPlayerInRoom,
+    removeGameState,
+    getPlayersOfRoom
 };

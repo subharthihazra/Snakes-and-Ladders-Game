@@ -1,6 +1,3 @@
-// let playerName = undefined;
-// let roomCode = undefined;
-
 function setCookie(cname, cvalue, exdays = 365) {
     // const dt = new Date();
     // dt.setTime(dt.getTime() + (exdays*24*60*60*1000));
@@ -162,11 +159,13 @@ function enterGameBoard(){
     gameContainer.classList.remove("invisible");
 }
 
-function showGameBut(){
-    showGameInfo(`<button id="startGame">Start Game</button>`, () => {
+function showPlayBut(){
+    const but_text = (playAgainButBool)? "Play Again" : "Play";
+
+    showGameInfo(`<button id="play_but">${but_text}</button>`, () => {
         
-        startGame = document.getElementById("startGame")
-        startGame.onclick = () => {
+        playBut = document.getElementById("play_but")
+        playBut.onclick = () => {
             startActualGame()
         }
         // console.log(startGame)
@@ -190,50 +189,32 @@ function hideGameInfo(callback = () => {}){
 }
 
 function updateGameState(gameState){
-    curGameState = gameState;
     // console.log("congo")
     // console.log(playerTokens)
     
-    updateTokens()
+    updateTokens(gameState);
+
+    curGameState = gameState;
     
     console.log(gameState);
 }
 
-function updateTokens(){
+function updateTokens(gameState){
 
-    for(player of Object.keys(curGameState.players)){
+    for(player of Object.keys(gameState.players)){
         console.log(player)
         
-        const curScore = curGameState.players[player].score;
-        const curPos = getPosToken(curScore);
-
-        console.log(curGameState.players[player],curScore, curPos);
-        if(curPos){
-            // console.log(playerTokens[player]);
-            console.log(((10*parseInt(curPos.x)+5) + "%"), ((10*parseInt(curPos.y)+5) + "%"))
-
-            playerTokens[player].style.left = (10*parseInt(curPos.x)+5) + "%";
-            playerTokens[player].style.top = (10*parseInt(curPos.y)+5) + "%";
-            
-        }
+        updateToken(player, gameState.players[player].score)
     }
 
 }
 
 function initTokens(gameState){
-    curGameState = gameState;
+    // curGameState = gameState;
     gameBoard.innerHTML = "";
 
     for(player of Object.keys(gameState.players)){
-        // gameBoard.innerHTML+=`<div id="Token_${player}" class="${gameState.players[player].color}"></div>`;
-
-        const div = document.createElement("div");
-        div.id = `Token_${player}`;
-        div.className = gameState.players[player].color;
-
-        gameBoard.appendChild(div);
-
-        playerTokens[player] = div;
+        initToken(player, gameState.players[player].color)
     }
 
 }
@@ -242,17 +223,60 @@ function removeTokens(gameState){
     newPlayers = Object.keys(gameState.players)
     for(player of Object.keys(curGameState.players)){
         if(newPlayers.indexOf(player) == -1){
+            gameBoard.removeChild(playerTokens[player]);
             delete playerTokens[player];
         }
     }
 }
 
+
+function initToken(player, color){
+    // gameBoard.innerHTML+=`<div id="Token_${player}" class="${gameState.players[player].color}"></div>`;
+    player = player.trim();
+
+    const div = document.createElement("div");
+    div.id = `Token_${player}`;
+    div.className = color;
+
+    gameBoard.appendChild(div);
+
+    playerTokens[player] = div;
+}
+
+function updateToken(player, curScore){
+    let prevScore = undefined;
+    if(curGameState != undefined && curGameState.players[player] != undefined){
+
+        prevScore = curGameState.players[player].score;
+    }
+    // console.log("prevScore",prevScore);
+
+    if(prevScore != curScore || prevScore == undefined){
+
+        const curPos = getPosToken(curScore);
+
+        // console.log(curGameState.players[player],curScore, curPos);
+        if(curPos){
+            // console.log(playerTokens[player]);
+            console.log(((10*parseInt(curPos.x)+5) + "%"), ((10*parseInt(curPos.y)+5) + "%"))
+
+            // playerTokens[player].style.left = (10*parseInt(curPos.x)+5) + "%";
+            // playerTokens[player].style.top = (10*parseInt(curPos.y)+5) + "%";
+
+            playerTokens[player].style.setProperty(`--token-left`, (10*parseInt(curPos.x)+5) + "%");
+            playerTokens[player].style.setProperty(`--token-top`, (10*parseInt(curPos.y)+5) + "%");
+            
+        }
+    }
+}
+
+
 function showDiceBut(){
     console.log("diceee");
-    showGameInfo(`<button id="rollDice">Roll Dice</button>`, () => {
+    showGameInfo(`<button id="dice_but">Roll Dice</button>`, () => {
         
-        rollDice = document.getElementById("rollDice")
-        rollDice.onclick = () => {
+        diceBut = document.getElementById("dice_but")
+        diceBut.onclick = () => {
             reqRollDice()
         }
     });
@@ -262,14 +286,30 @@ function showDiceBut(){
 //     hideGameInfo();
 // }
 
-function showPlayAgainBut(){
-    showGameInfo(`<button id="playAgain">Play Again</button>`, () => {
+// function showPlayAgainBut(){
+//     showGameInfo(`<button id="playAgain">Play Again</button>`, () => {
         
-        playAgain = document.getElementById("playAgain")
-        playAgain.onclick = () => {
-            startActualGame()
-        }
-    });
+//         playAgain = document.getElementById("playAgain")
+//         playAgain.onclick = () => {
+//             startActualGame()
+//         }
+//     });
+// }
+
+function initPlayerName(playerAuthCode, playerName){
+    playerNames[playerAuthCode.trim()] = playerName.trim();
+}
+
+
+function removePlayerName(playerAuthCode){
+    delete playerNames[playerAuthCode.trim()];
+}
+
+
+function initPlayerNames(playerNamesList){
+    for(player of Object.keys(playerNamesList)){
+        initPlayerName(player, playerNamesList[player]);
+    }
 }
 
 function getPosToken(score = 0){

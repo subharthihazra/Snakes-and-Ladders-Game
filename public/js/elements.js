@@ -43,3 +43,5 @@ let playAgain = undefined;
 
 let dice = undefined;
 let turn = undefined;
+
+let playAgainButBool = false;
