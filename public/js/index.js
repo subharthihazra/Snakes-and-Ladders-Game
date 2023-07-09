@@ -368,3 +368,18 @@ function leaveRoom(){
 
 joinRoomAtStart();
 // console.log(getPosToken(53))
+viewSwitchGameBoard();
+
+function viewSwitchGameBoard() {
+    if(gameBoardContainer.clientHeight > gameBoardContainer.clientWidth){
+        gameBoard.style.setProperty("--board-width", "100%");
+        gameBoard.style.setProperty("--board-height", "");
+    }else{
+        gameBoard.style.setProperty("--board-width", "");
+        gameBoard.style.setProperty("--board-height", "100%");
+    }
+}
+
+window.onresize = () => {
+    viewSwitchGameBoard();
+}

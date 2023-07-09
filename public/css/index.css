@@ -165,7 +165,11 @@ body {
     justify-content: center;
 }
 #game_board{
-    width:100%;
+    width: var(--board-width);
+    height: var(--board-height);
+}
+
+#game_board{
     aspect-ratio: 1/1;
     background-color: rgb(226, 156, 43);
     background-image: url("/images/game-board.png");
