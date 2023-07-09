@@ -23,7 +23,7 @@ socket.on("msg-joined", (payload) => {
     const {playerAuthCode, playerName} = payload;
     if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
-        playerNames[playerAuthCode.trim()] = playerName.trim();
+        initPlayerName(playerAuthCode, playerName);
         console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
     }
 })
@@ -33,7 +33,7 @@ socket.on("msg-left", (payload) => {
     const {playerAuthCode, playerName} = payload;
     if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
-        delete playerNames[playerAuthCode.trim()];
+        removePlayerName(playerAuthCode);
         console.log(playerName.trim(),"with code",playerAuthCode.trim(),"left!");
     }
 })
@@ -45,36 +45,45 @@ socket.on("popq", (payload) => {
 
 function joinRoom(data, callback){
     socket.emit("join-room", data, (payload) => {
-        const { status, showGameBut : showGameButBool } = payload;
+        const { status, showPlayBut : showPlayButBool } = payload;
         
         if(status == "success") {
             callback(status);
             if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
-                playerNames[playerAuthCode.trim()] = playerName.trim();
+                initPlayerName(playerAuthCode, playerName);
                 console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
             }
         }
-        if(showGameButBool){
-            showGameBut();
+        if(showPlayButBool){
+            showPlayBut();
+        }
+
+        if(status == "observer"){
+            console.log(payload);
+            handleInitGame(payload.data, true);
         }
     });
 }
 
-socket.on("show-game-but", () => {
-    showGameBut();
+socket.on("show-play-but", () => {
+    showPlayBut();
 })
 
 function startActualGame(){
     console.log("pee game started")
     console.log(roomCode)
-    socket.emit("start-actual-game", {roomCode : roomCode}, handleStartingActualGame);
+    socket.emit("start-actual-game", {roomCode : roomCode}, handleInitGame);
+    
 }
 
-socket.on("starting-actual-game", handleStartingActualGame)
+socket.on("init-game", handleInitGame)
 
-function handleStartingActualGame(data){
-    const { gameState } = data;
+function handleInitGame(data, observer = false){
+    const { gameState, playerNames: playerNamesList } = data;
+
+    initPlayerNames(playerNamesList);
+
     hideGameInfo();
 
     initTokens(gameState);
@@ -82,6 +91,10 @@ function handleStartingActualGame(data){
     if(gameState.turn == playerAuthCode){
         console.log("me")
         showDiceBut();
+    }
+
+    if(!observer){
+        playAgainButBool = true;
     }
 }
 
@@ -95,7 +108,7 @@ function reqRollDice(){
 
         if(winner && winner.trim().length == 4){
             console.log(playerNames[winner.trim()], "won!");
-            showPlayAgainBut();
+            showPlayBut();
         }
 
         if(gameState.turn == playerAuthCode){
@@ -112,7 +125,7 @@ socket.on("update-game-state", (data) => {
 
     if(winner && winner.trim().length == 4){
         console.log(playerNames[winner.trim()], "won!");
-        showPlayAgainBut();
+        showPlayBut();
     }
     
     if(gameState.turn == playerAuthCode){
@@ -122,7 +135,17 @@ socket.on("update-game-state", (data) => {
 
 
 socket.on("fix-game-state", (data) => {
-    const { gameState } = data;
+    const { gameState, winner } = data;
 
     removeTokens(gameState);
+    if(gameState.turn == playerAuthCode){
+        showDiceBut();
+    }
+
+    if(winner && winner.trim().length == 4){
+        console.log(playerNames[winner.trim()], "won!");
+        if(curGameState.turn == playerAuthCode){
+            hideGameInfo();
+        }
+    }
 })

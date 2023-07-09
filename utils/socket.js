@@ -11,7 +11,10 @@ const {
     removeSocket,
     getSocket,
     getRoom,
-    getPlayer
+    getPlayer,
+    checkPlayerInRoom,
+    removeGameState,
+    getPlayersOfRoom
 
 } = require("./game")
 
@@ -65,6 +68,10 @@ io.on("connection", (socket) => {
 
                             const data = fixGameState(room, playerAuthCode)
                             socket.to(room).emit("fix-game-state",data)
+                            
+                            if(data.winner != undefined && data.gameState.count > 1){
+                                socket.to(room).emit("show-play-but")
+                            }
                         }
                     }
                 }
@@ -92,14 +99,25 @@ io.on("connection", (socket) => {
             socket.to(roomCode).emit("msg-joined", {playerAuthCode: playerAuthCode, playerName: playerName})
             addSocket(socket.id, playerAuthCode)
 
-            if(io.sockets.adapter.rooms.get(roomCode).size <= 4){
 
-                if(io.sockets.adapter.rooms.get(roomCode).size >= 2){
-                    callback({status: 'success', showGameBut: true})
-                    socket.to(roomCode).emit("show-game-but");
-                }else{
-                    callback({status: 'success'});
+            const curGameState = getGameState(roomCode);
+            if(curGameState == undefined || curGameState.count <= 1){
+                if(io.sockets.adapter.rooms.get(roomCode).size <= 4){
+
+                    if(io.sockets.adapter.rooms.get(roomCode).size >= 2){
+                        callback({status: 'success', showPlayBut: true})
+                        socket.to(roomCode).emit("show-play-but");
+                    }else{
+                        callback({status: 'success'});
+                    }
                 }
+            }else{
+                let data = {};
+                data.playerNames = getPlayersOfRoom(roomCode);
+                data.gameState = getGameState(roomCode);
+
+                
+                callback({status: 'observer', data: data})
             }
         }else{
             callback({status: 'error'});
@@ -112,7 +130,9 @@ io.on("connection", (socket) => {
             console.log("Pee Here",roomCode);
             const data = initGameState(roomCode);
             if(data && data.gameState){
-                socket.to(roomCode).emit("starting-actual-game",data)
+                data.playerNames = getPlayersOfRoom(roomCode);
+                
+                socket.to(roomCode).emit("init-game",data)
                 callback(data)
             }
         }
@@ -123,6 +143,9 @@ io.on("connection", (socket) => {
         if(roomCode && playerAuthCode){
             const data = updateGameState(roomCode, playerAuthCode);
             if(data && data.gameState){
+                if(data.winner != undefined){
+                    removeGameState(roomCode);
+                }
                 socket.to(roomCode).emit("update-game-state",data)
                 callback(data)
             }
