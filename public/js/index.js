@@ -157,6 +157,8 @@ function enableF3j() {
 function enterGameBoard(){
     formContainer.classList.add("invisible");
     gameContainer.classList.remove("invisible");
+
+    showLeaveBut();
 }
 
 function showPlayBut(){
@@ -343,6 +345,21 @@ function getPosToken(score = 0){
         }
     }
 
+}
+
+function showLeaveBut(){
+    headerbar.innerHTML += `<button id="leave_but">Leave</button>`;
+
+    leaveBut = document.getElementById("leave_but");
+    leaveBut.onclick = () => {
+        leaveRoom();
+    }
+
+}
+
+function leaveRoom(){
+    setCookie("roomCode", "");
+    location.reload();
 }
 
 //////////////////////////////////////////////////////////////////////////////
