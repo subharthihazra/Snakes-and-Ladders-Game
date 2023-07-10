@@ -165,6 +165,20 @@ const passTurn = (roomCode) => {
     }
 }
 
+const generateSteps = (from, to) => {
+    let steps = [from];
+    
+    for(let i = from; i < to; i++) {
+        if(i % 10 == 0 || i % 10 == 1){
+            steps.push(i);
+        }
+    }
+
+    steps.push(to);
+
+    return steps;
+}
+
 const initGameState = (roomCode) => {
     if(roomCode){
         // if(getGameState(roomCode) == undefined){
@@ -208,9 +222,13 @@ const updateGameState = (roomCode, playerAuthCode) => {
         const curGameState = getGameState(roomCode);
         if(curGameState != undefined){
             if(curGameState.turn == playerAuthCode){
+
                 let dataToSend = {};
+                const oldScore = parseInt(gamesData[roomCode].players[playerAuthCode].score);
                 const curDice = rollADice();
-                const newScore = parseInt(gamesData[roomCode].players[playerAuthCode].score) + curDice;
+                const newScore = oldScore + curDice;
+
+                let steps = generateSteps(oldScore, newScore);
 
                 if(newScore == 100){
 
@@ -231,14 +249,16 @@ const updateGameState = (roomCode, playerAuthCode) => {
                     
                     
                     if(gotSnake){
-                        dataToSend.gotSnake = gotSnake;
+                        dataToSend.gotSnake = newScore;
+                        steps.push(gotSnake);
 
                         gamesData[roomCode].players[playerAuthCode].score = parseInt(gotSnake);
     
                         passTurn(roomCode);
     
                     }else if(gotLadder){
-                        dataToSend.gotLadder = gotLadder;
+                        dataToSend.gotLadder = newScore;
+                        steps.push(gotLadder);
     
                         gamesData[roomCode].players[playerAuthCode].score = parseInt(gotLadder);
     
@@ -253,6 +273,7 @@ const updateGameState = (roomCode, playerAuthCode) => {
 
                 dataToSend.curDice = curDice;
                 dataToSend.gameState = getGameState(roomCode);
+                dataToSend.steps = steps;
                 
                 return dataToSend;
 

@@ -24,7 +24,8 @@ socket.on("msg-joined", (payload) => {
     if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
         initPlayerName(playerAuthCode, playerName);
-        console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+        // console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+        viewJoinedMessage(playerAuthCode);
     }
 })
 
@@ -33,8 +34,9 @@ socket.on("msg-left", (payload) => {
     const {playerAuthCode, playerName} = payload;
     if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
+        viewLeftMessage(playerAuthCode);
+        // console.log(playerName.trim(),"with code",playerAuthCode.trim(),"left!");
         removePlayerName(playerAuthCode);
-        console.log(playerName.trim(),"with code",playerAuthCode.trim(),"left!");
     }
 })
 
@@ -52,7 +54,8 @@ function joinRoom(data, callback){
             if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
                 initPlayerName(playerAuthCode, playerName);
-                console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+                // console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+                viewJoinedMessage(playerAuthCode);
             }
 
             if(data && data.playerNames){
@@ -114,6 +117,7 @@ function reqRollDice(){
 
         if(winner && winner.trim().length == 4){
             console.log(playerNames[winner.trim()], "won!");
+            viewWonMessage(winner.trim());
             showPlayBut();
         }
 
@@ -125,12 +129,13 @@ function reqRollDice(){
 
 socket.on("update-game-state", (data) => {
 
-    const { gameState, curDice, winner, gotLadder, gotSnake } = data;
+    const { gameState, curDice, winner, gotLadder, gotSnake, steps } = data;
 
-    updateGameState(gameState);
+    updateGameState(gameState, steps);
 
     if(winner && winner.trim().length == 4){
         console.log(playerNames[winner.trim()], "won!");
+        viewWonMessage(winner.trim());
         showPlayBut();
     }
     
@@ -150,6 +155,7 @@ socket.on("fix-game-state", (data) => {
 
     if(winner && winner.trim().length == 4){
         console.log(playerNames[winner.trim()], "won!");
+        viewWonMessage(winner.trim());
         if(curGameState.turn == playerAuthCode){
             hideGameInfo();
         }

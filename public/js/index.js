@@ -191,7 +191,7 @@ function hideGameInfo(callback = () => {}){
     callback();
 }
 
-function updateGameState(gameState){
+function updateGameState(gameState, steps = []){
     // console.log("congo")
     // console.log(playerTokens)
     
@@ -360,6 +360,9 @@ function showLeaveBut(){
 
 function leaveRoom(){
     setCookie("roomCode", "");
+    setCookie("playerName", "");
+    setCookie("playerAuthCode", "");
+    /// add func to remove player details from server
     location.reload();
 }
 
@@ -374,6 +377,7 @@ chatMsgSendBut.onclick = () => {
         const msgBouble = viewChatMessageSelf(chatMessage);
 
         chatMsgbox.value = "";
+        toggleChatMsgSendBut();
     }
 }
 
@@ -408,8 +412,6 @@ function viewChatMessage(sender, chatMessage){
 
         addMessageInView(divOuter);
 
-        divOuter.classList.add("view");
-
     }
 }
 
@@ -432,9 +434,7 @@ function viewChatMessageSelf(chatMessage){
         divOuter.appendChild(divInner);
         
         addMessageInView(divOuter);
-
-        divOuter.classList.add("view");
-
+        
         return divOuter;
     }
 }
@@ -444,6 +444,8 @@ function addMessageInView(element){
 
         chatView.appendChild(element);
         chatView.scrollTop = chatView.scrollHeight;
+
+        element.classList.add("view");
     }
 }
 
@@ -459,7 +461,8 @@ function viewJoinedMessage(player){
         const divOuter = document.createElement("div");
         divOuter.className = "chat_msg_info";
 
-        divOuter.innerHTML = `<p class="chat_msg_info_name">${player}</p> joined !`;
+        //  &#x1f603; 😃
+        divOuter.innerHTML = `<span class="chat_msg_info_name">${playerName}</span> joined the game &#x1f603; !`;
 
         addMessageInView(divOuter);
     }
@@ -478,11 +481,41 @@ function viewLeftMessage(player){
         const divOuter = document.createElement("div");
         divOuter.className = "chat_msg_info";
 
-        divOuter.innerHTML = `<p class="chat_msg_info_name">${player}</p> left !`;
+        // &#x1f972; 🥲
+        divOuter.innerHTML = `<span class="chat_msg_info_name">${playerName}</span> left the game &#x1f972; !`;
 
         addMessageInView(divOuter);
     }
 } 
+
+
+function viewWonMessage(player){
+
+    if(player){
+        
+    let playerName = playerNames[player];
+    if(playerName == undefined){
+        playerName = "#"+player;
+    }
+    
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_info";
+
+        // &#x1f973; 🥳
+        // &#x1f60e; 😎
+        divOuter.innerHTML = `<span class="chat_msg_info_name">${playerName}</span> won the match &#x1f60e;&#x1f973; !`;
+
+        addMessageInView(divOuter);
+    }
+} 
+
+function toggleChatMsgSendBut(){
+    if(chatMsgbox.value.trim() != "") {
+        chatMsgSendBut.disabled = false;
+    }else{
+        chatMsgSendBut.disabled = true;
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 ///////////// CALLING FUNCTIONS //////////////////////////////////////////////
@@ -506,6 +539,9 @@ window.onresize = () => {
 }
 
 chatMsgbox.onkeyup = (event) => {
+
+    toggleChatMsgSendBut();
+
     if (event.code === 'Enter') {
         chatMsgSendBut.click();
     }
