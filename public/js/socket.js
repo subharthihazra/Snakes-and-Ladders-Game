@@ -45,7 +45,7 @@ socket.on("popq", (payload) => {
 
 function joinRoom(data, callback){
     socket.emit("join-room", data, (payload) => {
-        const { status, showPlayBut : showPlayButBool } = payload;
+        const { status, showPlayBut : showPlayButBool, data } = payload;
         
         if(status == "success") {
             callback(status);
@@ -54,9 +54,15 @@ function joinRoom(data, callback){
                 initPlayerName(playerAuthCode, playerName);
                 console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
             }
-        }
-        if(showPlayButBool){
-            showPlayBut();
+
+            if(data && data.playerNames){
+
+                initPlayerNames(data.playerNames);   
+            }         
+
+            if(showPlayButBool){
+                showPlayBut();
+            }
         }
 
         if(status == "observer"){
@@ -149,3 +155,19 @@ socket.on("fix-game-state", (data) => {
         }
     }
 })
+
+socket.on("chat-conversation", (data) => {
+    const {chatMessage, sender} = data;
+    if(chatMessage && sender){
+        viewChatMessage(sender, chatMessage);
+    }
+})
+
+function sendMessage(chatMessage, callback = () => {}){
+    if(chatMessage && chatMessage.trim() != "" && playerAuthCode){
+        chatMessage = chatMessage.trim();
+        socket.emit("chat-conversation", {chatMessage: chatMessage, sender: playerAuthCode, roomCode: roomCode}, () => {
+            callback();
+        });
+    }
+}

@@ -159,6 +159,7 @@ function enterGameBoard(){
     gameContainer.classList.remove("invisible");
 
     showLeaveBut();
+    viewSwitchGameBoard();
 }
 
 function showPlayBut(){
@@ -362,13 +363,133 @@ function leaveRoom(){
     location.reload();
 }
 
+chatMsgSendBut.onclick = () => {
+    if(chatMsgbox.value.trim() != ""){
+        const chatMessage = chatMsgbox.value.trim();
+        sendMessage(chatMessage, () => {
+            console.log("sent ->", chatMessage);
+            msgBouble.classList.add("sent");
+        })
+
+        const msgBouble = viewChatMessageSelf(chatMessage);
+
+        chatMsgbox.value = "";
+    }
+}
+
+function viewChatMessage(sender, chatMessage){
+    if(chatMessage && sender){
+        let senderName = playerNames[sender];
+        if(senderName == undefined){
+            senderName = "#"+sender;
+        }
+
+        // chatView.innerHTML+=`
+        // <div class="chat_msg_bouble_other">
+        // <div class="chat_msg_bouble_sender_name">${senderName}</div>
+        // <div class="chat_msg_bouble_chat_message">${chatMessage}</div>
+        // </div>
+        // `;
+
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_bouble_other";
+
+        const divInnerSenderName = document.createElement("div");
+        divInnerSenderName.className = "chat_msg_bouble_sender_name";
+        divInnerSenderName.textContent = senderName;
+
+
+        const divInnerChatMessage = document.createElement("div");
+        divInnerChatMessage.className = "chat_msg_bouble_chat_message";
+        divInnerChatMessage.textContent = chatMessage;
+
+        divOuter.appendChild(divInnerSenderName);
+        divOuter.appendChild(divInnerChatMessage);
+
+        addMessageInView(divOuter);
+
+        divOuter.classList.add("view");
+
+    }
+}
+
+
+function viewChatMessageSelf(chatMessage){
+    if(chatMessage){
+        // chatView.innerHTML+=`
+        // <div class="chat_msg_bouble_self">
+        // <div class="chat_msg_bouble_chat_message">${chatMessage}</div>
+        // </div>
+        // `;
+
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_bouble_self";
+
+        const divInner = document.createElement("div");
+        divInner.className = "chat_msg_bouble_chat_message";
+        divInner.textContent = chatMessage;
+
+        divOuter.appendChild(divInner);
+        
+        addMessageInView(divOuter);
+
+        divOuter.classList.add("view");
+
+        return divOuter;
+    }
+}
+
+function addMessageInView(element){
+    if(element){
+
+        chatView.appendChild(element);
+        chatView.scrollTop = chatView.scrollHeight;
+    }
+}
+
+function viewJoinedMessage(player){
+
+    if(player){
+        
+    let playerName = playerNames[player];
+    if(playerName == undefined){
+        playerName = "#"+player;
+    }
+    
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_info";
+
+        divOuter.innerHTML = `<p class="chat_msg_info_name">${player}</p> joined !`;
+
+        addMessageInView(divOuter);
+    }
+} 
+
+
+function viewLeftMessage(player){
+
+    if(player){
+        
+    let playerName = playerNames[player];
+    if(playerName == undefined){
+        playerName = "#"+player;
+    }
+    
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_info";
+
+        divOuter.innerHTML = `<p class="chat_msg_info_name">${player}</p> left !`;
+
+        addMessageInView(divOuter);
+    }
+} 
+
 //////////////////////////////////////////////////////////////////////////////
 ///////////// CALLING FUNCTIONS //////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
 joinRoomAtStart();
 // console.log(getPosToken(53))
-viewSwitchGameBoard();
 
 function viewSwitchGameBoard() {
     if(gameBoardContainer.clientHeight > gameBoardContainer.clientWidth){
@@ -383,3 +504,10 @@ function viewSwitchGameBoard() {
 window.onresize = () => {
     viewSwitchGameBoard();
 }
+
+chatMsgbox.onkeyup = (event) => {
+    if (event.code === 'Enter') {
+        chatMsgSendBut.click();
+    }
+}
+
