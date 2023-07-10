@@ -24,7 +24,8 @@ socket.on("msg-joined", (payload) => {
     if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
         initPlayerName(playerAuthCode, playerName);
-        console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+        // console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+        viewJoinedMessage(playerAuthCode);
     }
 })
 
@@ -33,8 +34,9 @@ socket.on("msg-left", (payload) => {
     const {playerAuthCode, playerName} = payload;
     if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
+        viewLeftMessage(playerAuthCode);
+        // console.log(playerName.trim(),"with code",playerAuthCode.trim(),"left!");
         removePlayerName(playerAuthCode);
-        console.log(playerName.trim(),"with code",playerAuthCode.trim(),"left!");
     }
 })
 
@@ -45,18 +47,25 @@ socket.on("popq", (payload) => {
 
 function joinRoom(data, callback){
     socket.emit("join-room", data, (payload) => {
-        const { status, showPlayBut : showPlayButBool } = payload;
+        const { status, showPlayBut : showPlayButBool, data } = payload;
         
         if(status == "success") {
             callback(status);
             if(playerAuthCode && playerName && playerAuthCode.trim().length == 4 && playerName.trim() != ""){
 
                 initPlayerName(playerAuthCode, playerName);
-                console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+                // console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+                viewJoinedMessage(playerAuthCode);
             }
-        }
-        if(showPlayButBool){
-            showPlayBut();
+
+            if(data && data.playerNames){
+
+                initPlayerNames(data.playerNames);   
+            }         
+
+            if(showPlayButBool){
+                showPlayBut();
+            }
         }
 
         if(status == "observer"){
@@ -108,6 +117,7 @@ function reqRollDice(){
 
         if(winner && winner.trim().length == 4){
             console.log(playerNames[winner.trim()], "won!");
+            viewWonMessage(winner.trim());
             showPlayBut();
         }
 
@@ -119,12 +129,13 @@ function reqRollDice(){
 
 socket.on("update-game-state", (data) => {
 
-    const { gameState, curDice, winner, gotLadder, gotSnake } = data;
+    const { gameState, curDice, winner, gotLadder, gotSnake, steps } = data;
 
-    updateGameState(gameState);
+    updateGameState(gameState, steps);
 
     if(winner && winner.trim().length == 4){
         console.log(playerNames[winner.trim()], "won!");
+        viewWonMessage(winner.trim());
         showPlayBut();
     }
     
@@ -144,8 +155,25 @@ socket.on("fix-game-state", (data) => {
 
     if(winner && winner.trim().length == 4){
         console.log(playerNames[winner.trim()], "won!");
+        viewWonMessage(winner.trim());
         if(curGameState.turn == playerAuthCode){
             hideGameInfo();
         }
     }
 })
+
+socket.on("chat-conversation", (data) => {
+    const {chatMessage, sender} = data;
+    if(chatMessage && sender){
+        viewChatMessage(sender, chatMessage);
+    }
+})
+
+function sendMessage(chatMessage, callback = () => {}){
+    if(chatMessage && chatMessage.trim() != "" && playerAuthCode){
+        chatMessage = chatMessage.trim();
+        socket.emit("chat-conversation", {chatMessage: chatMessage, sender: playerAuthCode, roomCode: roomCode}, () => {
+            callback();
+        });
+    }
+}

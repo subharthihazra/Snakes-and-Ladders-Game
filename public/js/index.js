@@ -157,6 +157,9 @@ function enableF3j() {
 function enterGameBoard(){
     formContainer.classList.add("invisible");
     gameContainer.classList.remove("invisible");
+
+    showLeaveBut();
+    viewSwitchGameBoard();
 }
 
 function showPlayBut(){
@@ -188,7 +191,7 @@ function hideGameInfo(callback = () => {}){
     callback();
 }
 
-function updateGameState(gameState){
+function updateGameState(gameState, steps = []){
     // console.log("congo")
     // console.log(playerTokens)
     
@@ -345,9 +348,202 @@ function getPosToken(score = 0){
 
 }
 
+function showLeaveBut(){
+    headerbar.innerHTML += `<button id="leave_but">Leave</button>`;
+
+    leaveBut = document.getElementById("leave_but");
+    leaveBut.onclick = () => {
+        leaveRoom();
+    }
+
+}
+
+function leaveRoom(){
+    setCookie("roomCode", "");
+    setCookie("playerName", "");
+    setCookie("playerAuthCode", "");
+    /// add func to remove player details from server
+    location.reload();
+}
+
+chatMsgSendBut.onclick = () => {
+    if(chatMsgbox.value.trim() != ""){
+        const chatMessage = chatMsgbox.value.trim();
+        sendMessage(chatMessage, () => {
+            console.log("sent ->", chatMessage);
+            msgBouble.classList.add("sent");
+        })
+
+        const msgBouble = viewChatMessageSelf(chatMessage);
+
+        chatMsgbox.value = "";
+        toggleChatMsgSendBut();
+    }
+}
+
+function viewChatMessage(sender, chatMessage){
+    if(chatMessage && sender){
+        let senderName = playerNames[sender];
+        if(senderName == undefined){
+            senderName = "#"+sender;
+        }
+
+        // chatView.innerHTML+=`
+        // <div class="chat_msg_bouble_other">
+        // <div class="chat_msg_bouble_sender_name">${senderName}</div>
+        // <div class="chat_msg_bouble_chat_message">${chatMessage}</div>
+        // </div>
+        // `;
+
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_bouble_other";
+
+        const divInnerSenderName = document.createElement("div");
+        divInnerSenderName.className = "chat_msg_bouble_sender_name";
+        divInnerSenderName.textContent = senderName;
+
+
+        const divInnerChatMessage = document.createElement("div");
+        divInnerChatMessage.className = "chat_msg_bouble_chat_message";
+        divInnerChatMessage.textContent = chatMessage;
+
+        divOuter.appendChild(divInnerSenderName);
+        divOuter.appendChild(divInnerChatMessage);
+
+        addMessageInView(divOuter);
+
+    }
+}
+
+
+function viewChatMessageSelf(chatMessage){
+    if(chatMessage){
+        // chatView.innerHTML+=`
+        // <div class="chat_msg_bouble_self">
+        // <div class="chat_msg_bouble_chat_message">${chatMessage}</div>
+        // </div>
+        // `;
+
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_bouble_self";
+
+        const divInner = document.createElement("div");
+        divInner.className = "chat_msg_bouble_chat_message";
+        divInner.textContent = chatMessage;
+
+        divOuter.appendChild(divInner);
+        
+        addMessageInView(divOuter);
+        
+        return divOuter;
+    }
+}
+
+function addMessageInView(element){
+    if(element){
+
+        chatView.appendChild(element);
+        chatView.scrollTop = chatView.scrollHeight;
+
+        element.classList.add("view");
+    }
+}
+
+function viewJoinedMessage(player){
+
+    if(player){
+        
+    let playerName = playerNames[player];
+    if(playerName == undefined){
+        playerName = "#"+player;
+    }
+    
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_info";
+
+        //  &#x1f603; 😃
+        divOuter.innerHTML = `<span class="chat_msg_info_name">${playerName}</span> joined the game &#x1f603; !`;
+
+        addMessageInView(divOuter);
+    }
+} 
+
+
+function viewLeftMessage(player){
+
+    if(player){
+        
+    let playerName = playerNames[player];
+    if(playerName == undefined){
+        playerName = "#"+player;
+    }
+    
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_info";
+
+        // &#x1f972; 🥲
+        divOuter.innerHTML = `<span class="chat_msg_info_name">${playerName}</span> left the game &#x1f972; !`;
+
+        addMessageInView(divOuter);
+    }
+} 
+
+
+function viewWonMessage(player){
+
+    if(player){
+        
+    let playerName = playerNames[player];
+    if(playerName == undefined){
+        playerName = "#"+player;
+    }
+    
+        const divOuter = document.createElement("div");
+        divOuter.className = "chat_msg_info";
+
+        // &#x1f973; 🥳
+        // &#x1f60e; 😎
+        divOuter.innerHTML = `<span class="chat_msg_info_name">${playerName}</span> won the match &#x1f60e;&#x1f973; !`;
+
+        addMessageInView(divOuter);
+    }
+} 
+
+function toggleChatMsgSendBut(){
+    if(chatMsgbox.value.trim() != "") {
+        chatMsgSendBut.disabled = false;
+    }else{
+        chatMsgSendBut.disabled = true;
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 ///////////// CALLING FUNCTIONS //////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
 joinRoomAtStart();
 // console.log(getPosToken(53))
+
+function viewSwitchGameBoard() {
+    if(gameBoardContainer.clientHeight > gameBoardContainer.clientWidth){
+        gameBoard.style.setProperty("--board-width", "100%");
+        gameBoard.style.setProperty("--board-height", "");
+    }else{
+        gameBoard.style.setProperty("--board-width", "");
+        gameBoard.style.setProperty("--board-height", "100%");
+    }
+}
+
+window.onresize = () => {
+    viewSwitchGameBoard();
+}
+
+chatMsgbox.onkeyup = (event) => {
+
+    toggleChatMsgSendBut();
+
+    if (event.code === 'Enter') {
+        chatMsgSendBut.click();
+    }
+}
+

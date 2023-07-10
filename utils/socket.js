@@ -100,20 +100,23 @@ io.on("connection", (socket) => {
             addSocket(socket.id, playerAuthCode)
 
 
+            let data = {};
+            data.playerNames = getPlayersOfRoom(roomCode);
+
             const curGameState = getGameState(roomCode);
             if(curGameState == undefined || curGameState.count <= 1){
                 if(io.sockets.adapter.rooms.get(roomCode).size <= 4){
 
                     if(io.sockets.adapter.rooms.get(roomCode).size >= 2){
-                        callback({status: 'success', showPlayBut: true})
+
+                        callback({status: 'success', showPlayBut: true, data: data})
                         socket.to(roomCode).emit("show-play-but");
                     }else{
-                        callback({status: 'success'});
+
+                        callback({status: 'success', data: data});
                     }
                 }
             }else{
-                let data = {};
-                data.playerNames = getPlayersOfRoom(roomCode);
                 data.gameState = getGameState(roomCode);
 
                 
@@ -149,6 +152,14 @@ io.on("connection", (socket) => {
                 socket.to(roomCode).emit("update-game-state",data)
                 callback(data)
             }
+        }
+    })
+
+    socket.on("chat-conversation", (data, callback) => {
+        const {chatMessage, sender, roomCode} = data;
+        if(chatMessage && sender && roomCode) {
+            socket.to(roomCode).emit("chat-conversation", {chatMessage: chatMessage, sender: sender});
+            callback();
         }
     })
 

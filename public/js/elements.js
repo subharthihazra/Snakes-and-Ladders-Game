@@ -33,6 +33,8 @@ const gameBoard = document.querySelector("#game_board");
 const chatContainer = document.querySelector("#chat_container");
 const chatView = document.querySelector("#chat_view");
 const chatMsgbar = document.querySelector("#chat_msgbar");
+const chatMsgbox = document.querySelector("#chat_msgbox");
+const chatMsgSendBut = document.querySelector("#chat_msg_send_but");
 
 let playerNames = {};
 let startGame = undefined;
