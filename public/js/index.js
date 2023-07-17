@@ -172,6 +172,10 @@ function showPlayBut(){
             startActualGame()
         }
         // console.log(startGame)
+
+        playBut.classList.remove("invisible");
+        playBut.classList.add("view");
+        
     });
 }
 
@@ -181,33 +185,62 @@ function showPlayBut(){
 
 function showGameInfo(content, callback = () => {}){
     gameInfo.innerHTML = content;
-    gameInfo.classList.remove("invisible");
+
     callback();
 }
 
-function hideGameInfo(callback = () => {}){
-    gameInfo.innerHTML = "";
-    gameInfo.classList.add("invisible");
-    callback();
+// function hideGameInfo(callback = () => {}){
+//     gameInfo.innerHTML = "";
+
+//     gameInfo.classList.remove("view");
+//     gameInfo.classList.add("invisible");
+
+//     callback();
+// }
+
+function hidePlayBut(){
+    playBut.classList.add("invisible");
+    playBut.classList.remove("view");
+
+    // deleteElmWait(playBut, 0.3);
+}
+
+function hideDiceBut(){
+    diceBut.classList.add("invisible");
+    diceBut.classList.remove("view");
+
+    // deleteElmWait(diceBut, 0.3);
 }
 
 function updateGameState(gameState, steps = []){
     // console.log("congo")
     // console.log(playerTokens)
     
-    updateTokens(gameState);
+    updateTokens(gameState, steps);
 
     curGameState = gameState;
     
     console.log(gameState);
 }
 
-function updateTokens(gameState){
+function updateTokens(gameState, steps){
 
     for(player of Object.keys(gameState.players)){
-        console.log(player)
-        
-        updateToken(player, gameState.players[player].score)
+        let curScore = gameState.players[player].score;
+
+        // console.log(player)
+
+        let prevScore = undefined;
+        if(curGameState != undefined && curGameState.players[player] != undefined){
+
+            prevScore = curGameState.players[player].score;
+        }
+        // console.log("prevScore",prevScore);
+
+        if(prevScore != curScore || prevScore == undefined){
+            console.log(steps)
+            updateToken(player, steps, curScore);
+        }
     }
 
 }
@@ -246,42 +279,90 @@ function initToken(player, color){
     playerTokens[player] = div;
 }
 
-function updateToken(player, curScore){
-    let prevScore = undefined;
-    if(curGameState != undefined && curGameState.players[player] != undefined){
+function updateToken(player, steps, curScore){
 
-        prevScore = curGameState.players[player].score;
-    }
-    // console.log("prevScore",prevScore);
+    let iter = 0;
+    let updateTokenStepsTimer = undefined;
 
-    if(prevScore != curScore || prevScore == undefined){
+    const updateTokenSteps = () => {
+        if(iter < steps.length){
 
-        const curPos = getPosToken(curScore);
+            updateTokenPos(player, steps[iter]);
+            iter++;
 
-        // console.log(curGameState.players[player],curScore, curPos);
-        if(curPos){
-            // console.log(playerTokens[player]);
-            console.log(((10*parseInt(curPos.x)+5) + "%"), ((10*parseInt(curPos.y)+5) + "%"))
+        }else if(iter == steps.length){
 
-            // playerTokens[player].style.left = (10*parseInt(curPos.x)+5) + "%";
-            // playerTokens[player].style.top = (10*parseInt(curPos.y)+5) + "%";
+            updateTokenPos(player, curScore);
 
-            playerTokens[player].style.setProperty(`--token-left`, (10*parseInt(curPos.x)+5) + "%");
-            playerTokens[player].style.setProperty(`--token-top`, (10*parseInt(curPos.y)+5) + "%");
-            
+            if(updateTokenStepsTimer){ clearInterval(updateTokenStepsTimer) };
+        }else{
+
+            if(updateTokenStepsTimer){ clearInterval(updateTokenStepsTimer) };
         }
     }
+    
+    updateTokenSteps();
+    updateTokenStepsTimer = setInterval(updateTokenSteps, GAME_STEP_ANIM_DURATION * 1000);
+    
+}
+
+
+
+function updateTokenPos(player, curScore){
+
+    const curPos = getPosToken(curScore);
+    // console.log(curGameState.players[player],curScore, curPos);
+    if(curPos){
+        // console.log(playerTokens[player]);
+        console.log(((10*parseInt(curPos.x)+5) + "%"), ((10*parseInt(curPos.y)+5) + "%"))
+
+        // playerTokens[player].style.left = (10*parseInt(curPos.x)+5) + "%";
+        // playerTokens[player].style.top = (10*parseInt(curPos.y)+5) + "%";
+
+        playerTokens[player].style.setProperty(`--token-left`, (10*parseInt(curPos.x)+5) + "%");
+        playerTokens[player].style.setProperty(`--token-top`, (10*parseInt(curPos.y)+5) + "%");
+        
+    }
+
+}
+
+function showGameInfoText(data){
+    const { curDice, winner, gotLadder, gotSnake } = data;
+
+    let textToShow = "";
+
+    if(winner == undefined){
+        if(curDice){
+            textToShow += curDice;
+        }
+        if(gotSnake){
+            // &#x1F40D 🐍
+            textToShow += " & &#x1F40D;";
+        }
+        if(gotLadder){
+            // &#x1FA9C 🪜
+            textToShow += " & &#x1FA9C;";
+        }
+    }else{
+        textToShow = playerNames[winner.trim()] + " won!";
+    }
+
+    showGameInfo(`<div id="game_info_text">${textToShow}</div>`);
 }
 
 
 function showDiceBut(){
     console.log("diceee");
-    showGameInfo(`<button id="dice_but">Roll Dice</button>`, () => {
+    showGameInfo(`<button id="dice_but"></button>`, () => {
         
         diceBut = document.getElementById("dice_but")
         diceBut.onclick = () => {
             reqRollDice()
         }
+
+        diceBut.classList.remove("invisible");
+        diceBut.classList.add("view");
+        
     });
 }
 
@@ -449,6 +530,17 @@ function addMessageInView(element){
     }
 }
 
+function viewRoomCodeMessage(){
+
+    const divOuter = document.createElement("div");
+    divOuter.className = "chat_msg_info";
+
+    //  &#x1f603; 😃
+    divOuter.innerHTML = `Room Code of the game is <span class="chat_msg_info_name">${roomCode}</span> !`;
+
+    addMessageInView(divOuter);
+}
+
 function viewJoinedMessage(player){
 
     if(player){
@@ -517,6 +609,7 @@ function toggleChatMsgSendBut(){
     }
 }
 
+
 //////////////////////////////////////////////////////////////////////////////
 ///////////// CALLING FUNCTIONS //////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -526,11 +619,11 @@ joinRoomAtStart();
 
 function viewSwitchGameBoard() {
     if(gameBoardContainer.clientHeight > gameBoardContainer.clientWidth){
-        gameBoard.style.setProperty("--board-width", "100%");
-        gameBoard.style.setProperty("--board-height", "");
+        gameBoardOuter.style.setProperty("--board-width", "100%");
+        gameBoardOuter.style.setProperty("--board-height", "");
     }else{
-        gameBoard.style.setProperty("--board-width", "");
-        gameBoard.style.setProperty("--board-height", "100%");
+        gameBoardOuter.style.setProperty("--board-width", "");
+        gameBoardOuter.style.setProperty("--board-height", "100%");
     }
 }
 

@@ -1,4 +1,6 @@
 const GAME_INFO_ANIM_DURATION = 0.3;
+const GAME_STEP_ANIM_DURATION = 0.3;
+const GAME_INFO_WAIT_DURATION = 4;
 
 const bodyContainer = document.querySelector("#body_container");
 const startCover = document.querySelector("#start_cover");
@@ -28,6 +30,7 @@ const f3jBox = document.querySelector("#f3j_box");
 const f3jButton = document.querySelector("#f3j_but");
 const gameContainer = document.querySelector("#game_container");
 const gameBoardContainer = document.querySelector("#game_board_container");
+const gameBoardOuter = document.querySelector("#game_board_outer");
 const gameInfo = document.querySelector("#game_info");
 const gameBoard = document.querySelector("#game_board");
 const chatContainer = document.querySelector("#chat_container");
@@ -35,6 +38,8 @@ const chatView = document.querySelector("#chat_view");
 const chatMsgbar = document.querySelector("#chat_msgbar");
 const chatMsgbox = document.querySelector("#chat_msgbox");
 const chatMsgSendBut = document.querySelector("#chat_msg_send_but");
+let playBut = undefined;
+let diceBut = undefined;
 
 let playerNames = {};
 let startGame = undefined;

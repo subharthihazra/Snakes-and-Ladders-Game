@@ -166,15 +166,13 @@ const passTurn = (roomCode) => {
 }
 
 const generateSteps = (from, to) => {
-    let steps = [from];
+    let steps = [];
     
-    for(let i = from; i < to; i++) {
+    for(let i = from + 1 ; i < to; i++) {
         if(i % 10 == 0 || i % 10 == 1){
             steps.push(i);
         }
     }
-
-    steps.push(to);
 
     return steps;
 }
@@ -250,7 +248,7 @@ const updateGameState = (roomCode, playerAuthCode) => {
                     
                     if(gotSnake){
                         dataToSend.gotSnake = newScore;
-                        steps.push(gotSnake);
+                        steps.push(newScore);
 
                         gamesData[roomCode].players[playerAuthCode].score = parseInt(gotSnake);
     
@@ -258,7 +256,7 @@ const updateGameState = (roomCode, playerAuthCode) => {
     
                     }else if(gotLadder){
                         dataToSend.gotLadder = newScore;
-                        steps.push(gotLadder);
+                        steps.push(newScore);
     
                         gamesData[roomCode].players[playerAuthCode].score = parseInt(gotLadder);
     
