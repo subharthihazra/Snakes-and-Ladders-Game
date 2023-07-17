@@ -3,11 +3,13 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const cookieParser = require('cookie-parser');
+const serverless = require('serverless-http');
+
 // const connectDB = require("./utils/connectDB");
 
 
 // static assets
-app.use(express.static('./public'))
+app.use(express.static('../public'))
 // parse form data
 app.use(express.urlencoded({ extended: false }))
 // parse json
@@ -17,11 +19,11 @@ app.use(cookieParser());
 //set view engine to ejs
 app.set("view engine", "ejs")
 //use express routers
-const routers = require("./utils/router");
+const routers = require("../utils/router");
 app.use("/.netlify/functions/api", routers);
 
 //include socket.io connections
-require("./utils/socket")(server);
+require("../utils/socket")(server);
 
 
 const start = async () => {
@@ -40,4 +42,6 @@ const start = async () => {
     }
   };
   
-start();
+// start();
+
+module.exports.handler = serverless(app);
