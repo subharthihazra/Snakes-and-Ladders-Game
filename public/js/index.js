@@ -46,6 +46,9 @@ f1Button.onclick = async () => {
     if(f1Box.value.trim() != ""){
         if(playerName==undefined || playerName.trim() == ""){
             playerName = f1Box.value.trim();
+            if(playerName.length > 20){
+                playerName = playerName.substring(0, 20);
+            }
         }
         if(playerAuthCode==undefined || playerAuthCode.trim().length != 4){
             const { data } = await axios.post("/addplayer", {playerName: playerName});
