@@ -6,7 +6,7 @@
   "scripts": {
     "start": "./node_modules/.bin/netlify-lambda serve src",
     "dev": "nodemon server.js",
-    "build": "./node_modules/.bin/netlify-lambda build src"
+    "build": "./node_modules/.bin/netlify-lambda serve src"
   },
   "author": "Subharthi Hazra",
   "license": "ISC",
