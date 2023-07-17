@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.set("view engine", "ejs")
 //use express routers
 const routers = require("./utils/router");
-app.use("/", routers);
+app.use("/.netlify/functions/api", routers);
 
 //include socket.io connections
 require("./utils/socket")(server);
@@ -41,21 +41,3 @@ const start = async () => {
   };
   
 start();
-
-// const {Player, Room, Game} = require("./utils/dataStoreSchema");
-// jsonProducts = {
-//   roomCode: "ABCD23",
-//   players: [{
-//     playerAuthCode: "Qwe6",
-//     color: "red"
-//   },{
-//     playerAuthCode: "Adi2",
-//     color: "green"
-//   }]
-// }
-// Game.create(jsonProducts);
-// Game.find({roomCode: "ABCD23"}).exec().then((res) => {
-//   let result = res[0].players;
-//   result = result.find(p => p.playerAuthCode === "Adi2");
-//   console.log(result);
-// })
