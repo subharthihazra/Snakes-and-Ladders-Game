@@ -55,6 +55,7 @@ function joinRoom(data, callback){
 
                 initPlayerName(playerAuthCode, playerName);
                 // console.log(playerName.trim(),"with code",playerAuthCode.trim(),"joined!");
+                viewRoomCodeMessage();
                 viewJoinedMessage(playerAuthCode);
             }
 
@@ -69,6 +70,7 @@ function joinRoom(data, callback){
         }
 
         if(status == "observer"){
+            callback(status);
             console.log(payload);
             handleInitGame(payload.data, true);
         }
@@ -92,8 +94,10 @@ function handleInitGame(data, observer = false){
     const { gameState, playerNames: playerNamesList } = data;
 
     initPlayerNames(playerNamesList);
-
-    hideGameInfo();
+    
+    if(!observer){
+        hidePlayBut();
+    }
 
     initTokens(gameState);
     updateGameState(gameState);
@@ -110,19 +114,30 @@ function handleInitGame(data, observer = false){
 function reqRollDice(){
     socket.emit("roll-dice", {roomCode : roomCode, playerAuthCode : playerAuthCode}, (data) => {
 
-        const { gameState, curDice, winner, gotLadder, gotSnake } = data;
+        const { gameState, curDice, winner, gotLadder, gotSnake, steps } = data;
+        
+        updateGameState(gameState, steps);
+        hideDiceBut();
 
-        updateGameState(gameState);
-        hideGameInfo();
+        showGameInfoText({
+            curDice : curDice,
+            winner : winner,
+            gotLadder : gotLadder,
+            gotSnake : gotSnake
+        });
 
         if(winner && winner.trim().length == 4){
             console.log(playerNames[winner.trim()], "won!");
             viewWonMessage(winner.trim());
-            showPlayBut();
+
+            setTimeout(showPlayBut, GAME_INFO_WAIT_DURATION * 1000);
         }
 
         if(gameState.turn == playerAuthCode){
-            showDiceBut();
+
+            setTimeout(() => {
+                showDiceBut();
+            }, GAME_STEP_ANIM_DURATION * (steps.length + 1) * 1000)
         }
     });
 }
@@ -132,15 +147,26 @@ socket.on("update-game-state", (data) => {
     const { gameState, curDice, winner, gotLadder, gotSnake, steps } = data;
 
     updateGameState(gameState, steps);
+    
+    showGameInfoText({
+        curDice : curDice,
+        winner : winner,
+        gotLadder : gotLadder,
+        gotSnake : gotSnake
+    });
 
     if(winner && winner.trim().length == 4){
         console.log(playerNames[winner.trim()], "won!");
         viewWonMessage(winner.trim());
-        showPlayBut();
+        
+        setTimeout(showPlayBut, GAME_INFO_WAIT_DURATION * 1000);
     }
     
     if(gameState.turn == playerAuthCode){
-        showDiceBut();
+
+        setTimeout(() => {
+            showDiceBut();
+        }, GAME_STEP_ANIM_DURATION * (steps.length + 1) * 1000)
     }
 })
 
@@ -149,16 +175,24 @@ socket.on("fix-game-state", (data) => {
     const { gameState, winner } = data;
 
     removeTokens(gameState);
+
+    showGameInfoText({
+        winner : winner
+    });
+
     if(gameState.turn == playerAuthCode){
+        
         showDiceBut();
     }
 
     if(winner && winner.trim().length == 4){
         console.log(playerNames[winner.trim()], "won!");
         viewWonMessage(winner.trim());
+
         if(curGameState.turn == playerAuthCode){
-            hideGameInfo();
+            hideDiceBut();
         }
+        
     }
 })
 

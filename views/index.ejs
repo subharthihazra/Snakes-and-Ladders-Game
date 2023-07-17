@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@400;500;600&display=swap" rel="stylesheet">
+
 
     <script>
     <% if(playerAuthCode!=undefined){ 
@@ -104,8 +106,10 @@
             
             <div id="game_container" <% if(!joinAtStart){ %>class="invisible"<% } %>>
                 <div id="game_board_container">
-                    <div id="game_info" class="invisible"></div>
-                    <div id="game_board"></div>
+                    <div id="game_board_outer">
+                        <div id="game_info"></div>
+                        <div id="game_board"></div>
+                    </div>
                 </div>
                 <div id="chat_container">
                     <div id="chat_view"></div>
