@@ -7,6 +7,8 @@ const startCover = document.querySelector("#start_cover");
 const startCoverText = document.querySelector("#start_cover_text");
 const startCoverButton = document.querySelector("#start_cover_but");
 const headerbar = document.querySelector("#headerbar");
+const headerbarRightContainer = document.querySelector("#headerbar_right_container");
+const chatBut = document.querySelector("#chat_but");
 const mainContainer = document.querySelector("#main_container");
 const formContainer = document.querySelector("#form_container");
 const form1 = document.querySelector("#form_1");
@@ -52,3 +54,4 @@ let dice = undefined;
 let turn = undefined;
 
 let playAgainButBool = false;
+let chatButToggle = false;
