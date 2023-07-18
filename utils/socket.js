@@ -21,7 +21,11 @@ const {
 // SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
 const createSocketServer = (port) => {
-const io = new socketServer(port)
+const io = new socketServer(port, {
+    cors: {
+        origin: ["https://snakes-and-ladders-game-subharthi-subharthihazra.vercel.app", "https://snakes-and-ladders-game-subharthi-subharthihazra.vercel.app:9001"]
+    }
+})
 
 
 io.on("connection", (socket) => {
