@@ -6,7 +6,7 @@ const {createRoom, addPlayer, getPlayer, getRoom, addPlayerToRoom, removePlayerF
 
 router.route("/").get((req, res) => {
     res.status(200).json({cow:10})
-}
+})
 //     console.log(req.cookies);
 
 //     let dataToSend = {};
