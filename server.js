@@ -3,8 +3,6 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const cookieParser = require('cookie-parser');
-const serverless = require('serverless-http');
-
 // const connectDB = require("./utils/connectDB");
 
 
@@ -42,6 +40,4 @@ const start = async () => {
     }
   };
   
-// start();
-// module.exports = app;
-module.exports.handler = serverless(server);
+start();
