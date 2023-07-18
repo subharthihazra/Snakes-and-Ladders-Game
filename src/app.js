@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.set("view engine", "ejs")
 //use express routers
 const routers = require("../utils/router");
-app.use("/", routers);
+app.use("/.netlify/functions/server", routers);
 
 //include socket.io connections
 require("../utils/socket")(server);
