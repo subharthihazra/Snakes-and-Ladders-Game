@@ -23,7 +23,7 @@ const {
 const createSocketServer = (port) => {
 const io = new socketServer(port, {
     cors: {
-        origin: ["http://localhost:5000"]
+        origin: ["http://localhost:9001"]
     }
 })
 
