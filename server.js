@@ -4,9 +4,10 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 // const connectDB = require("./utils/connectDB");
 
-
+app.use(cors());
 // static assets
 app.use(express.static(path.join(__dirname, 'public')));
 // parse form data
