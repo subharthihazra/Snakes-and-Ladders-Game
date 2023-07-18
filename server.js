@@ -29,9 +29,9 @@ const start = async () => {
       // connectDB
       // await connectDB(process.env.MONGO_URI);
 
-      PORT = process.env.PORT || 5000
+      PORT = process.env.PORT || 9001
       server.listen(PORT, () => {
-          console.log("Server Listening at post 5000 ...")
+          console.log("Server Listening at post 9001 ...")
       })
       
       
