@@ -20,27 +20,27 @@ app.use(cookieParser());
 app.set("view engine", "ejs")
 //use express routers
 const routers = require("../utils/router");
-app.use("/.netlify/functions/api", routers);
+app.use("/", routers);
 
 //include socket.io connections
 require("../utils/socket")(server);
 
 
-const start = async () => {
-    try {
-      // connectDB
-      // await connectDB(process.env.MONGO_URI);
+// const start = async () => {
+//     try {
+//       // connectDB
+//       // await connectDB(process.env.MONGO_URI);
 
-      PORT = process.env.PORT || 5000
-      server.listen(PORT, () => {
-          console.log("Server Listening at post 5000 ...")
-      })
+//       PORT = process.env.PORT || 5000
+//       server.listen(PORT, () => {
+//           console.log("Server Listening at post 5000 ...")
+//       })
       
       
-    } catch (error) {
-      console.log(error);
-    }
-  };
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
   
 // start();
 
