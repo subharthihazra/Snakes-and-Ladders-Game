@@ -7,11 +7,11 @@ const {createRoom, addPlayer, getPlayer, getRoom, addPlayerToRoom, removePlayerF
 router.route("/").get((req, res) => {
     // console.log(req.cookies);
 
-    let dataToSend = {};
-    dataToSend.playerName = "Mustass";
-    dataToSend.roomCode = "r7gy2W";
-    dataToSend.playerAuthCode = "Yrew";
-    dataToSend.startCoverButtonClicked = false;
+    // let dataToSend = {};
+    // dataToSend.playerName = "Mustass";
+    // dataToSend.roomCode = "r7gy2W";
+    // dataToSend.playerAuthCode = "Yrew";
+    // dataToSend.startCoverButtonClicked = false;
 
     // if(req.cookies.playerName){
     //     dataToSend.playerName = req.cookies.playerName;
@@ -43,7 +43,7 @@ router.route("/").get((req, res) => {
     // }
 
     
-    res.render("index", dataToSend);
+    res.render("ab");
 })
 
 // router.route("/createroom").post((req, res) => {
