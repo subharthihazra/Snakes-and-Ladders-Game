@@ -8,10 +8,6 @@ router.route("/").get((req, res) => {
     // console.log(req.cookies);
 
     // let dataToSend = {};
-    // dataToSend.playerName = "Mustass";
-    // dataToSend.roomCode = "r7gy2W";
-    // dataToSend.playerAuthCode = "Yrew";
-    // dataToSend.startCoverButtonClicked = false;
 
     // if(req.cookies.playerName){
     //     dataToSend.playerName = req.cookies.playerName;
