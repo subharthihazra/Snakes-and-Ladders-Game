@@ -2,7 +2,7 @@
   "name": "snakes-and-ladders-game",
   "version": "1.0.0",
   "description": "This is a multiplayer Snakes and Ladders Game.",
-  "main": "server.js",
+  "main": "./src/app.js",
   "scripts": {
     "start": "./node_modules/.bin/netlify-lambda serve src",
     "dev": "nodemon server.js",
