@@ -5,45 +5,46 @@ const {createRoom, addPlayer, getPlayer, getRoom, addPlayerToRoom, removePlayerF
 
 
 router.route("/").get((req, res) => {
-    res.status(200).json({cow:10})
-})
-//     console.log(req.cookies);
+    // console.log(req.cookies);
 
-//     let dataToSend = {};
+    let dataToSend = {};
+    dataToSend.playerName = "Mustass";
+    dataToSend.roomCode = "r7gy2W";
+    dataToSend.playerAuthCode = "Yrew";
+    dataToSend.startCoverButtonClicked = false;
 
+    // if(req.cookies.playerName){
+    //     dataToSend.playerName = req.cookies.playerName;
 
-//     if(req.cookies.playerName){
-//         dataToSend.playerName = req.cookies.playerName;
+    //     if(dataToSend.playerName.length > 20){
+    //         dataToSend.playerName = dataToSend.playerName.substring(0, 20);
+    //     }
 
-//         if(dataToSend.playerName.length > 20){
-//             dataToSend.playerName = dataToSend.playerName.substring(0, 20);
-//         }
+    // }else{
+    //     dataToSend.playerName = undefined;
+    // }
 
-//     }else{
-//         dataToSend.playerName = undefined;
-//     }
+    // if(req.cookies.playerAuthCode){
+    //     dataToSend.playerAuthCode = req.cookies.playerAuthCode;
+    // }else{
+    //     dataToSend.playerAuthCode = undefined;
+    // }
 
-//     if(req.cookies.playerAuthCode){
-//         dataToSend.playerAuthCode = req.cookies.playerAuthCode;
-//     }else{
-//         dataToSend.playerAuthCode = undefined;
-//     }
+    // if(req.cookies.roomCode){
+    //     dataToSend.roomCode = req.cookies.roomCode;
+    // }else{
+    //     dataToSend.roomCode = undefined;
+    // }
 
-//     if(req.cookies.roomCode){
-//         dataToSend.roomCode = req.cookies.roomCode;
-//     }else{
-//         dataToSend.roomCode = undefined;
-//     }
-
-//     if(req.cookies.startCoverButtonClicked){
-//         dataToSend.startCoverButtonClicked = (req.cookies.startCoverButtonClicked=="true")?true:false;
-//     }else{
-//         dataToSend.startCoverButtonClicked = false;
-//     }
+    // if(req.cookies.startCoverButtonClicked){
+    //     dataToSend.startCoverButtonClicked = (req.cookies.startCoverButtonClicked=="true")?true:false;
+    // }else{
+    //     dataToSend.startCoverButtonClicked = false;
+    // }
 
     
-//     res.render("index", dataToSend);
-// })
+    res.render("index", dataToSend);
+})
 
 // router.route("/createroom").post((req, res) => {
 //     const {playerName, playerAuthCode} = req.body;
