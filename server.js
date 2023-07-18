@@ -42,4 +42,4 @@ const start = async () => {
   
 start();
 
-module.exports = app;
+module.exports = server;
