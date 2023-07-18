@@ -24,23 +24,23 @@ app.use("/", routers);
 require("./utils/socket")(server);
 
 
-const start = async () => {
-    try {
-      // connectDB
-      // await connectDB(process.env.MONGO_URI);
+// const start = async () => {
+//     try {
+//       // connectDB
+//       // await connectDB(process.env.MONGO_URI);
 
-      PORT = process.env.PORT || 9001
-      server.listen(PORT, () => {
-          console.log("Server Listening at post 9001 ...");
-      })
+//       PORT = process.env.PORT || 9001
+//       server.listen(PORT, () => {
+//           console.log("Server Listening at post 9001 ...");
+//       })
       
       
-    } catch (error) {
-      console.log(error);
-    }
-  };
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
   
-start();
+// start();
 
 // const {Player, Room, Game} = require("./utils/dataStoreSchema");
 // jsonProducts = {
@@ -59,3 +59,5 @@ start();
 //   result = result.find(p => p.playerAuthCode === "Adi2");
 //   console.log(result);
 // })
+
+module.exports = app;
