@@ -46,6 +46,9 @@ f1Button.onclick = async () => {
     if(f1Box.value.trim() != ""){
         if(playerName==undefined || playerName.trim() == ""){
             playerName = f1Box.value.trim();
+            if(playerName.length > 20){
+                playerName = playerName.substring(0, 20);
+            }
         }
         if(playerAuthCode==undefined || playerAuthCode.trim().length != 4){
             const { data } = await axios.post("/addplayer", {playerName: playerName});
@@ -160,6 +163,7 @@ function enterGameBoard(){
 
     showLeaveBut();
     viewSwitchGameBoard();
+    chatBut.classList.remove("invisible");
 }
 
 function showPlayBut(){
@@ -343,11 +347,14 @@ function showGameInfoText(data){
             // &#x1FA9C 🪜
             textToShow += " & &#x1FA9C;";
         }
+    
+        showGameInfo(`<div id="game_info_text">${textToShow}</div>`);
+
     }else{
         textToShow = playerNames[winner.trim()] + " won!";
-    }
 
-    showGameInfo(`<div id="game_info_text">${textToShow}</div>`);
+        showGameInfo(`<div id="game_info_won">${textToShow}</div>`);
+    }
 }
 
 
@@ -430,7 +437,7 @@ function getPosToken(score = 0){
 }
 
 function showLeaveBut(){
-    headerbar.innerHTML += `<button id="leave_but">Leave</button>`;
+    headerbarRightContainer.innerHTML += `<button id="leave_but"><svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48"><path d="M645-327q-9-9-9-21.75t9-21.25l80-80H405q-12.75 0-21.375-8.675-8.625-8.676-8.625-21.5 0-12.825 8.625-21.325T405-510h318l-81-81q-8-8-8-20.447 0-12.448 9.214-21.5Q651.661-642 664.33-642q12.67 0 21.67 9l133 133q5 5 7 10.133 2 5.134 2 11Q828-473 826-468q-2 5-7 10L687-326q-8 8-20.5 8t-21.5-9ZM180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h261q12.75 0 21.375 8.675 8.625 8.676 8.625 21.5 0 12.825-8.625 21.325T441-780H180v600h261q12.75 0 21.375 8.675 8.625 8.676 8.625 21.5 0 12.825-8.625 21.325T441-120H180Z"/></svg></button>`;
 
     leaveBut = document.getElementById("leave_but");
     leaveBut.onclick = () => {
@@ -536,7 +543,7 @@ function viewRoomCodeMessage(){
     divOuter.className = "chat_msg_info";
 
     //  &#x1f603; 😃
-    divOuter.innerHTML = `Room Code of the game is <span class="chat_msg_info_name">${roomCode}</span> !`;
+    divOuter.innerHTML = `Room Code of the game is [ <span class="chat_msg_info_name">${roomCode}</span> ] !`;
 
     addMessageInView(divOuter);
 }
@@ -607,6 +614,18 @@ function toggleChatMsgSendBut(){
     }else{
         chatMsgSendBut.disabled = true;
     }
+}
+
+
+chatBut.onclick = () => {
+    if(chatButToggle){
+        chatContainer.classList.add("invisible");
+        chatContainer.classList.remove("view");
+    }else{
+        chatContainer.classList.add("view");
+        chatContainer.classList.remove("invisible");
+    }
+    chatButToggle = !chatButToggle;
 }
 
 

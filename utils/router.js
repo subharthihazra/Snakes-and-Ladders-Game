@@ -12,6 +12,11 @@ router.route("/").get((req, res) => {
 
     if(req.cookies.playerName){
         dataToSend.playerName = req.cookies.playerName;
+
+        if(dataToSend.playerName.length > 20){
+            dataToSend.playerName = dataToSend.playerName.substring(0, 20);
+        }
+
     }else{
         dataToSend.playerName = undefined;
     }
@@ -58,8 +63,12 @@ router.route("/createroom").post((req, res) => {
 
 
 router.route("/addplayer").post((req, res) => {
-    const {playerName} = req.body;
+    let {playerName} = req.body;
     if(playerName && playerName.trim() != ""){
+
+        if(playerName.length > 20){
+            playerName = playerName.substring(0, 20);
+        }
         
         const playerAuthCode = addPlayer(playerName.trim());
 
@@ -75,13 +84,16 @@ router.route("/addplayer").post((req, res) => {
 
 
 router.route("/joinroom").post((req, res) => {
-    const {roomCode, playerAuthCode, playerName} = req.body;
+    let {roomCode, playerAuthCode, playerName} = req.body;
     if(roomCode && roomCode.trim().length == 6 &&
     playerAuthCode && playerAuthCode.trim().length == 4 && playerName && playerName.trim() != ""){
         // check if roomCode and playerAuthCode exists else add
 
         // console.log(getRoom(roomCode))
         // console.log(getRoom(roomCode))
+        if(playerName.length > 20){
+            playerName = playerName.substring(0, 20);
+        }
 
         res.cookie("playerAuthCode", playerAuthCode.trim())
         res.cookie("playerName", playerName.trim())
