@@ -31,7 +31,7 @@ const start = async () => {
 
       PORT = process.env.PORT || 9001
       server.listen(PORT, () => {
-          console.log("Server Listening at post 9001 ...")
+          console.log("Server Listening at post 9001 ...");
       })
       
       
