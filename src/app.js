@@ -21,6 +21,7 @@ app.set("view engine", "ejs")
 //use express routers
 const routers = require("../utils/router");
 app.use("/.netlify/functions/server", routers);
+app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../view/index.ejs')));
 
 //include socket.io connections
 require("../utils/socket")(server);
