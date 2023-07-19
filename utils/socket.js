@@ -21,7 +21,13 @@ const {
 // SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
 const createSocketServer = (port) => {
-const io = new socketServer(port)
+const io = new socketServer(port,{
+
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true,
+    transports: ['websocket', 'polling'],
+})
 
 
 io.on("connection", (socket) => {
