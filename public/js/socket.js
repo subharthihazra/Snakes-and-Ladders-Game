@@ -17,7 +17,7 @@
 //     socket.emit("joro", roombox.value);
 // })
 socket.on("connect", (payload) => {
-    console.log("connected",payload);
+    console.log("connected",payload,socket.id, socket.recovered);
 })
 socket.on("msg-joined", (payload) => {
     const {playerAuthCode, playerName} = payload;
