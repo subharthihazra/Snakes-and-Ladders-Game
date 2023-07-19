@@ -21,15 +21,16 @@ const {
 // SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
 const createSocketServer = (port) => {
-const io = new socketServer(port,{
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-        credentials: true,
-        transports: ['websocket', 'polling']
-    },
-    allowEIO3: true
-})
+const io = new socketServer(port)
+// {
+//     cors: {
+//         origin: "*",
+//         methods: ["GET", "POST"],
+//         credentials: true,
+//         transports: ['websocket', 'polling']
+//     },
+//     allowEIO3: true
+// }
 
 
 io.on("connection", (socket) => {
