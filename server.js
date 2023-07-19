@@ -23,7 +23,7 @@ const routers = require("./utils/router");
 app.use("/", routers);
 
 //include socket.io connections
-require(path.join(__dirname, "utils/socket"))(server);
+// require("./utils/socket")(server);
 
 
 const start = async () => {
