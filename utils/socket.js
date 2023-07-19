@@ -22,11 +22,13 @@ const {
 
 const createSocketServer = (port) => {
 const io = new socketServer(port,{
-
-    origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true,
-    transports: ['websocket', 'polling'],
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        credentials: true,
+        transports: ['websocket', 'polling']
+    },
+    allowEIO3: true
 })
 
 
