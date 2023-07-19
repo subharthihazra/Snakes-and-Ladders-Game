@@ -21,7 +21,14 @@ const {
 // SOCKET_PORT = process.env.SOCKET_PORT || 3000;
 
 const createSocketServer = (port) => {
-const io = new socketServer(port)
+const io = new socketServer(port,{
+    connectionStateRecovery: {
+        // the backup duration of the sessions and the packets
+        maxDisconnectionDuration: 2 * 60 * 1000,
+        // whether to skip middlewares upon successful recovery
+        skipMiddlewares: true,
+    }
+})
 // {
 //     cors: {
 //         origin: "*",
