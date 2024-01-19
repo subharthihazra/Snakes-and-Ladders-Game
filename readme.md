@@ -1,7 +1,11 @@
 # Snakes and Ladders Game
 ### This is a multiplayer Snakes and Ladders Game.
 ## Tech Stack Used:
-### Node.JS, JS, Socket.io
+Node.JS , Javascript , Socket.io
+
+## Live Link:
+https://snakes.riverslide.com/
+
 ## Installation:
 1. Install Node in your PC.
 2. Clone this repo. (master branch)
